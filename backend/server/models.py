@@ -37,3 +37,13 @@ class User(db.Model, SerializerMixin):
             "last_name": self.last_name,
             "email": self.email
         }
+
+
+class Boardgame(db.Model, SerializerMixin):
+    __tablename__ = 'board_games'
+
+    # Fields
+
+    id = db.column(db.Integer, primary_key=True)
+    title = db.column(db.String(200), nullable=False)
+    price = db.colummn(db.Decimal(10, 2), nullable=False)
