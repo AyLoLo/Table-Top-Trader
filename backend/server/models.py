@@ -47,3 +47,15 @@ class Boardgame(db.Model, SerializerMixin):
     id = db.column(db.Integer, primary_key=True)
     title = db.column(db.String(200), nullable=False)
     price = db.colummn(db.Decimal(10, 2), nullable=False)
+
+
+class Review(db.Model, SerializerMixin):
+    __tablename__ = 'reviews'
+
+    # Fields
+
+    id = db.column(db.Integer, primary_key=True)
+    reviewer = db.column(db.String, db.ForeignKey("users.id"), nullable=False)
+    subject = db.column(db.String, db.ForeignKey("users.id"), nullable=False)
+    rating = db.column(db.Integer, nullable=False)
+    comment = db.column(db.String(500))
