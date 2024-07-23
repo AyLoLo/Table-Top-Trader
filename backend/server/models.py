@@ -16,4 +16,22 @@ class User(db.Model, SerializerMixin):
 
     # Fields
     id = db.column(db.Integer, primary_key=True)
-    username = db.column
+    username = db.column(db.String(50), nullable=False, unique=True)
+    password_hash = db.column(db.String(120), nullable=False)
+    first_name = db.column(db.String(50), nullable=False)
+    last_name = db.column(db.String(50), nullable=False)
+    email = db.column(db.String(120), nullable=False)
+
+    # Login/Signup Data
+
+    def __repr__(self):
+        return f'`<User id = "{self.id}" username="{self.username}">`'
+    
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "username": self.username,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "email": self.email
+        }
