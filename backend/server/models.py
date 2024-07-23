@@ -21,9 +21,11 @@ class User(db.Model, SerializerMixin):
     first_name = db.column(db.String(50), nullable=False)
     last_name = db.column(db.String(50), nullable=False)
     email = db.column(db.String(120), nullable=False)
+    
+    # FIGURE OUT DATETIME 
+    date_created = db.column(db.Datetime, default=datetime.now)
 
     # Login/Signup Data
-
     def __repr__(self):
         return f'`<User id = "{self.id}" username="{self.username}">`'
     
