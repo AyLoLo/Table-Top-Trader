@@ -17,7 +17,10 @@ class User(db.Model, SerializerMixin):
     # Fields
     id = db.column(db.Integer, primary_key=True)
     username = db.column(db.String(50), nullable=False, unique=True)
+    
+    # WILL BE USING BCRYPT FOR PASSWORD
     password_hash = db.column(db.String(120), nullable=False)
+    
     first_name = db.column(db.String(50), nullable=False)
     last_name = db.column(db.String(50), nullable=False)
     email = db.column(db.String(120), nullable=False)
@@ -55,7 +58,24 @@ class Review(db.Model, SerializerMixin):
     # Fields
 
     id = db.column(db.Integer, primary_key=True)
-    reviewer = db.column(db.String, db.ForeignKey("users.id"), nullable=False)
-    subject = db.column(db.String, db.ForeignKey("users.id"), nullable=False)
+    reviewer = db.column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    subject = db.column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     rating = db.column(db.Integer, nullable=False)
     comment = db.column(db.String(500))
+    date_created = db.column(db.Datetime, default=datetime.now)
+
+
+class Post(db.Model, SerializerMixin):
+    __tablename__ = "posts"
+
+    # Fields
+
+    id = db.column(db.Integer, primary_key=True)
+    title = db.column(db.String(100), nullable=False)
+    user = db.column(db.Integer, db.ForeignKey("users.id"), nullable=False) 
+
+    # IMAGE WOULD BE A LINK REF
+
+    description = db.column(db.String(500), nullable=False)
+    location = db.column(db.String(200, nullable=False))
+    date_created = db.column(db.Datetime, default=datetime.now)
