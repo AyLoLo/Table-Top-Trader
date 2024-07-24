@@ -57,7 +57,7 @@ class User(db.Model, SerializerMixin):
         }
 
 
-class Boardgame(db.Model, SerializerMixin):
+class Board_Game(db.Model, SerializerMixin):
     __tablename__ = 'board_games'
 
     # Fields
