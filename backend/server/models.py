@@ -25,7 +25,7 @@ class User(db.Model, SerializerMixin):
     email = db.Column(db.String(120), nullable=False, unique=True)
 
     # FIGURE OUT DATETIME
-    date_created = db.Column(db.Datetime, default=datetime.now)
+    date_created = db.Column(db.DateTime, default=datetime.now)
 
     # RELATIONSHIPS
     posts = db.relationship('Post',
@@ -63,7 +63,7 @@ class Board_Game(db.Model, SerializerMixin):
     # Fields
     board_game_id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
-    price = db.colummn(db.Numeric(10, 2), nullable=False)
+    price = db.Column(db.Numeric(10, 2), nullable=False)
 
     # Relationships
     posts = db.relationship('Post',
@@ -89,7 +89,7 @@ class Review(db.Model, SerializerMixin):
                            db.ForeignKey("users.user_id"), nullable=False)
     rating = db.Column(db.Integer, nullable=False)
     comment = db.Column(db.String(500))
-    date_created = db.Column(db.Datetime, default=datetime.now)
+    date_created = db.Column(db.DateTime, default=datetime.now)
 
     # Relationships
     reviewer = db.relationship('User', foreign_keys=[reviewer_id],
@@ -127,7 +127,7 @@ class Post(db.Model, SerializerMixin):
 
     description = db.Column(db.String(500), nullable=False)
     location = db.Column(db.String(200), nullable=False)
-    date_created = db.Column(db.Datetime, default=datetime.now)
+    date_created = db.Column(db.DateTime, default=datetime.now)
 
     # Relationships
     user = db.relationship('User', back_populates='posts')
