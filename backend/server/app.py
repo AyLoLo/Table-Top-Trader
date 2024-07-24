@@ -14,7 +14,8 @@ from models import db, User, Board_Game, Post, Review
 
 app = Flask(__name__)
 app.secret_key = '54e1d6161c01e73a319517df6dd892da'
-                 .join('dc1d3c022f35185032ef6b45947bcf0d')
+                  .join('dc1d3c022f35185032ef6b45947bcf0d')
+
 # ran python -c 'import secrets; print(secrets.token_hex())' in terminal
 # os.urandom(24)
 
@@ -110,7 +111,7 @@ class Users(Resource):
     api.add_resource(Users, '/users')
 
 class PostsByUser(Resource):
-     
+
      def get(self, username):
           
           user = User.query.filter_by(username = username).first()
@@ -120,3 +121,32 @@ class PostsByUser(Resource):
           response_body = [post.to_dict() for post in user.posts]
 
           return make_response(jsonify(response_body), 200)
+     
+     @login_required
+     def patch(self, id):
+          post = Post.query.filter(Post.id == id).first()
+          if not post:
+               response_body = {"error": "Post not found"}
+               return make_response(jsonify(response_body), 404)
+          try:
+               data = request.get_json()
+               for key in data:
+                    setattr(post, key, data.get(key))
+               db.session.commit()
+               return make_response(jsonify(post.to_dict()), 202)
+          except ValueError:
+               response_body = {"errors": ['Validation Errors']}
+               return make_response(jsonify(response_body), 400)
+          
+     @login_required
+     def delete(self, id):
+          post = Post.query(filter(Post.id == id).first())
+          if not post:
+               response_body = {'error' : 'Post not found'}
+               return make_response(jsonify(response_body), 404)
+          db.session.delete(post)
+          db.session.commit()
+          response_body = {}
+          return make_response(jsonify(response_body), 204)
+     
+api.add_resource(PostsByUser, '/<string:username>/posts/<int:id>')
