@@ -15,26 +15,26 @@ class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
     # Fields
-    id = db.column(db.Integer, primary_key=True)
-    username = db.column(db.String(50), nullable=False, unique=True)
+    user_id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), nullable=False, unique=True)
     
     # WILL BE USING BCRYPT FOR PASSWORD
-    password_hash = db.column(db.String(120), nullable=False)
+    password_hash = db.Column(db.String(120), nullable=False)
     
-    first_name = db.column(db.String(50), nullable=False)
-    last_name = db.column(db.String(50), nullable=False)
-    email = db.column(db.String(120), nullable=False)
+    first_name = db.Column(db.String(50), nullable=False)
+    last_name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(120), nullable=False, unique=True)
     
     # FIGURE OUT DATETIME 
-    date_created = db.column(db.Datetime, default=datetime.now)
+    date_created = db.Column(db.Datetime, default=datetime.now)
 
     # Login/Signup Data
     def __repr__(self):
-        return f'`<User id = "{self.id}" username="{self.username}">`'
+        return f'`<User id = "{self.user_id}" username="{self.username}">`'
     
     def to_dict(self):
         return {
-            "id": self.id,
+            "user_id": self.user_id,
             "username": self.username,
             "first_name": self.first_name,
             "last_name": self.last_name,
@@ -47,8 +47,8 @@ class Boardgame(db.Model, SerializerMixin):
 
     # Fields
 
-    id = db.column(db.Integer, primary_key=True)
-    title = db.column(db.String(200), nullable=False)
+    board_game_id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
     price = db.colummn(db.Decimal(10, 2), nullable=False)
 
 
@@ -57,12 +57,12 @@ class Review(db.Model, SerializerMixin):
 
     # Fields
 
-    id = db.column(db.Integer, primary_key=True)
-    reviewer = db.column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    subject = db.column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    rating = db.column(db.Integer, nullable=False)
-    comment = db.column(db.String(500))
-    date_created = db.column(db.Datetime, default=datetime.now)
+    review_id = db.Column(db.Integer, primary_key=True)
+    reviewer = db.Column(db.Integer, db.ForeignKey("users.user_id"), nullable=False)
+    subject = db.Column(db.Integer, db.ForeignKey("users.user_id"), nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
+    comment = db.Column(db.String(500))
+    date_created = db.Column(db.Datetime, default=datetime.now)
 
 
 class Post(db.Model, SerializerMixin):
@@ -70,12 +70,12 @@ class Post(db.Model, SerializerMixin):
 
     # Fields
 
-    id = db.column(db.Integer, primary_key=True)
-    title = db.column(db.String(100), nullable=False)
-    user = db.column(db.Integer, db.ForeignKey("users.id"), nullable=False) 
+    post_id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    user = db.Column(db.Integer, db.ForeignKey("users.user_id"), nullable=False)
 
     # IMAGE WOULD BE A LINK REF
 
-    description = db.column(db.String(500), nullable=False)
-    location = db.column(db.String(200, nullable=False))
-    date_created = db.column(db.Datetime, default=datetime.now)
+    description = db.Column(db.String(500), nullable=False)
+    location = db.Column(db.String(200), nullable=False)
+    date_created = db.Column(db.Datetime, default=datetime.now)
