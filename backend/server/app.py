@@ -202,6 +202,15 @@ class Reviews(Resource):
                     comment = data.get("comment"),
                     data_created = data.get("date_created")
                )
+               db.session.add(new_review)
+               db.session.commit()
+               response_body = new_review.to_dict()
+               return make_response(jsonify(response_body), 200)
+          except ValueError:
+               response_body = {'errors' : ['validation errors']}
+               return make_response(jsonify(response_body), 400)
+          
+api.add_resource(Reviews, '/reviews')
 
 class ReviewsByUser(Resource):
      
