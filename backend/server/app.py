@@ -108,7 +108,37 @@ class Users(Resource):
         session["user_id"] = None
         return {"message": "Successfully logged out"}, 204
 
-    api.add_resource(Users, '/users')
+api.add_resource(Users, '/users')
+
+class Posts(Resource):
+     
+     def get(self):
+          posts= Post.query.all()
+          response_body = []
+          for post in posts:
+               response_body.append(post.to_dict())
+          return make_response(jsonify(response_body), 200)
+     
+     def post(self):
+          try:
+               data = request.get_json()
+               new_post = Post(
+                    title = data.get('title'),
+                    user_id = data.get('user_id')
+                    boardgame_id = data.get('boardgame_id')
+                    description = data.get('description')
+                    location = data.get('location')
+                    data_created = data.get('date_created')
+                )
+               db.session.add(new_post)
+               db.session.commit()
+               response_body = new_post.to_dict()
+               return make_response(jsonify(response_body), 200)
+          except ValueError:
+               response_body  = {'errors': ['validation errors']}
+               return make_response(jsonify(response_body), 400)
+
+api.add_resource(Posts, '/posts')
 
 class PostsByUser(Resource):
 
@@ -150,3 +180,14 @@ class PostsByUser(Resource):
           return make_response(jsonify(response_body), 204)
      
 api.add_resource(PostsByUser, '/<string:username>/posts/<int:id>')
+
+class ReviewsByUser(Resource):
+     
+     def get(self, username):
+          
+          user = User.query.filter_by(username = username).first()
+          if not user:
+               response_body = {"error": "User and their reviews not found"}
+               return make_response(jsonify(response_body), 404)
+          response_body = [review.to_dict() for review in user.reviews]
+
