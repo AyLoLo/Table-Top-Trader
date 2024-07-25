@@ -60,6 +60,7 @@ class Users(Resource):
         users = User.query.all()
         response_body = []
         for user in users:
+            # Must verify if can properly get given/recieved reviews
             relationship = {
                 'posts': [post.to_dict() for post in user.posts],
                 'given_reviews': [given_review.to_dict()
@@ -190,7 +191,8 @@ class PostsByUser(Resource):
           db.session.commit()
           response_body = {}
           return make_response(jsonify(response_body), 204)
-     
+
+# Rewrite this, BP
 api.add_resource(PostsByUser, '/<string:username>/posts/<int:id>')
 
 
@@ -232,4 +234,36 @@ class ReviewsByUser(Resource):
                response_body = {"error": "User and their reviews not found"}
                return make_response(jsonify(response_body), 404)
           response_body = [review.to_dict() for review in user.reviews]
+          return make_response(jsonify(response_body), 200)
+     
+     @login_required
+     def patch(self, id):
+        review = Review.query.filter(Review.id == id).first()
+        if not review :
+             response_body = {"error" :  "Review not found"}
+             return make_response(jsonify(response_body), 404)
+        try:
+             data = request.get_json()
+             for key in data:
+                  setattr(review, key, data.get(key))
+             db.session.commit()
+             return make_response(jsonify(review.to_dict()), 202)
+        except ValueError:
+             response_body = {'errors' : ["validation errors"]}
+             return make_response(jsonify(response_body), 400)
 
+     @login_required
+     def delete(self, id):
+          review = Review.query.filter(Review.id == id).first()
+          if not review :
+               response_body = {'error': 'Post not found'}
+               return make_response(jsonify(response_body) 404)
+          db.session.delete(review)
+          db.session.commit()
+          response_body = {}
+          return make_response(jsonify(response_body), 204)
+     
+api.add_resource(ReviewsByUser, '/<string:username>/reviews/<int:id>')
+
+if __name__ == '__main__':
+     app.run(port=7000, debug=True)
