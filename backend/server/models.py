@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
 from sqlalchemy_serializer import SerializerMixin
 from datetime import datetime
+from sqlalchemy.ext.associationproxy import association_proxy
 
 metadata = MetaData(naming_convention={
     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
@@ -66,9 +67,11 @@ class Board_Game(db.Model, SerializerMixin):
     price = db.Column(db.Numeric(10, 2), nullable=False)
 
     # Relationships
-    posts = db.relationship('Post',
-                            back_populates='boardgame',
-                            cascade="all, delete-orphan")
+    board_game_posts = db.relationship("Board_Game_Post", back_populates="board_game", cascade='all, delete-orphan')
+    posts = association_proxy('board_game_posts', 'posts', creator=lambda p: Board_Game_Post(post=p))
+
+    # Serializer
+    serialize_rules = ('-board_game_posts')
 
     def to_dict(self):
         return {
@@ -120,8 +123,9 @@ class Post(db.Model, SerializerMixin):
     title = db.Column(db.String(100), nullable=False)
     user_id = db.Column(db.Integer,
                         db.ForeignKey("users.user_id"), nullable=False)
-    boardgame_id = db.Column(db.Integer,
-                             db.ForeignKey("board_games.id"), nullable=False)
+    board_game_id = db.Column(db.Integer,
+                             db.ForeignKey("board_games.board_game_id"),
+                             nullable=False)
 
     # IMAGE WOULD BE A LINK REF
 
@@ -131,7 +135,11 @@ class Post(db.Model, SerializerMixin):
 
     # Relationships
     user = db.relationship('User', back_populates='posts')
-    boardgame = db.relationship('Boardgame', back_populates='posts')
+    board_game_posts = db.relationship("Board_Game_Post", back_populates="post", cascade='all, delete-orphan')
+    board_games = association_proxy('board_game_posts', 'board_game', creator=lambda b: Board_Game_Post(board_game=b))
+    
+    # Serialize
+    serialize_rules = ('-board_game_posts')
 
     def __repr__(self):
         return f'<Post id="{self.post_id}" title="{self.title}">'
@@ -141,8 +149,37 @@ class Post(db.Model, SerializerMixin):
             "id": self.post_id,
             "title": self.title,
             "user_id": self.user_id,
-            "boardgame_id": self.boardgame_id,
+            "board_game_id": self.board_game_id,
             "description": self.description,
             "location": self.location,
             "date_created": self.date_created.isoformat()
+        }
+
+
+class Board_Game_Post(db.Model, SerializerMixin):
+    __tablename__ = "board_game_posts"
+
+    # Fields
+    board_game_post_id = db.Column(db.Integer,
+                                   primary_key=True,
+                                   nullable=False)
+    board_game_id = db.Column(db.Integer,
+                              db.ForeignKey("board_games.board_game_id"),
+                              nullable=False)
+    post_id = db.Column(db.Integer,
+                        db.ForeignKey("posts.post_id"),
+                        nullable=False)
+
+    post = db.relationship('Post', foreign_keys=[post_id],
+                           back_populates="board_game_posts")
+    board_game = db.relationship('Board_Game', foreign_keys=[board_game_id],
+                              back_populates="board_game_posts")
+
+    def __repr__(self):
+        return f'<BoardGamePost board_game_id="{self.board_game_id}" post_id="{self.post_id}">'
+
+    def to_dict(self):
+        return {
+            "board_game_id": self.board_game_id,
+            "post_id": self.post_id
         }
