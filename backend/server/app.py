@@ -110,10 +110,21 @@ class Users(Resource):
 
 api.add_resource(Users, '/users')
 
+class Board_Games(Resource):
+     
+     def get(self):
+          board_games = Board_Game.query.all()
+          response_body = []
+          for board_game in board_games:
+               response_body.append(board_game.to_dict())
+          return make_response(jsonify(response_body), 200)
+
+api.add_resource(Board_Games, "/boardgames")  
+
 class Posts(Resource):
      
      def get(self):
-          posts= Post.query.all()
+          posts = Post.query.all()
           response_body = []
           for post in posts:
                response_body.append(post.to_dict())
