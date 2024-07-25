@@ -122,7 +122,7 @@ class Board_Games(Resource):
         return make_response(jsonify(response_body), 200)
 
 
-api.add_resource(Board_Games, "/boardgames")  
+api.add_resource(Board_Games, "/boardgames")
 
 
 class Posts(Resource):
@@ -141,7 +141,7 @@ class Posts(Resource):
             new_post = Post(
                 title = data.get('title'),
                 user_id = data.get('user_id'),
-                boardgame_id = data.get('boardgame_id'),
+                board_game_id = data.get('board_game_id'),
                 description = data.get('description'),
                 location = data.get('location'),
                 data_created = data.get('date_created')
