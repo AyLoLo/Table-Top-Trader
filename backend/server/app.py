@@ -122,12 +122,13 @@ class Posts(Resource):
      def post(self):
           try:
                data = request.get_json()
+               # Boardgame_id and user_id neccessary?
                new_post = Post(
                     title = data.get('title'),
-                    user_id = data.get('user_id')
-                    boardgame_id = data.get('boardgame_id')
-                    description = data.get('description')
-                    location = data.get('location')
+                    user_id = data.get('user_id'),
+                    boardgame_id = data.get('boardgame_id'),
+                    description = data.get('description'),
+                    location = data.get('location'),
                     data_created = data.get('date_created')
                 )
                db.session.add(new_post)
@@ -180,6 +181,27 @@ class PostsByUser(Resource):
           return make_response(jsonify(response_body), 204)
      
 api.add_resource(PostsByUser, '/<string:username>/posts/<int:id>')
+
+
+class Reviews(Resource):
+     
+     def get(self):
+          reviews = Review.query.all()
+          response_body = []
+          for review in reviews:
+               response_body.append(review.to_dict())
+          return make_response(jsonify(response_body), 200)
+     
+     def post(self):
+          try:
+               data = request.get_json()
+               new_review = Review(
+                    reviewer_id = data.get("reviewer_id"),
+                    subject_id = data.get("subject_id"),
+                    rating = data.get("rating"),
+                    comment = data.get("comment"),
+                    data_created = data.get("date_created")
+               )
 
 class ReviewsByUser(Resource):
      
