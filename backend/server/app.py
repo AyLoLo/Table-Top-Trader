@@ -77,7 +77,7 @@ class Users(Resource):
     def create_user():
         json = request.json
         pw_hash = bcrypt.generate_password_hash(json['password']).decode('utf-8')
-        new_user = User(username=json['username'], password_hash=pw_hash)
+        new_user = User(username=json['username'], password_hash=pw_hash, first_name=json['first_name'], last_name=json['last_name'], email=json['email'])
         db.session.add(new_user)
         db.session.commit()
         session['user_id'] = new_user.user_id
@@ -137,11 +137,11 @@ class Posts(Resource):
     def post(self):
         try:
             data = request.get_json()
-            # Boardgame_id and user_id neccessary?
+            # Board_game_id and user_id neccessary?
             new_post = Post(
                 title = data.get('title'),
                 user_id = data.get('user_id'),
-                boardgame_id = data.get('boardgame_id'),
+                board_game_id = data.get('board_game_id'),
                 description = data.get('description'),
                 location = data.get('location'),
                 data_created = data.get('date_created')

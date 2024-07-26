@@ -9,6 +9,11 @@ metadata = MetaData(naming_convention={
 
 db = SQLAlchemy(metadata=metadata)
 
+board_game_posts = db.Table('board_game_posts',
+                            metadata,
+                            db.Column('board_game_id', db.ForeignKey('board_games.board_game_id'), primary_key=True),
+                            db.Column('post_id', db.ForeignKey('posts.post_id'), primary_key=True)
+)
 
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
@@ -57,6 +62,45 @@ class User(db.Model, SerializerMixin):
         }
 
 
+
+class Post(db.Model, SerializerMixin):
+    __tablename__ = "posts"
+
+    # Fields
+
+    post_id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    user_id = db.Column(db.Integer,
+                        db.ForeignKey("users.user_id"), nullable=False)
+    board_game_id = db.Column(db.Integer,
+                             db.ForeignKey("board_games.board_game_id"),
+                             nullable=False)
+
+    # IMAGE WOULD BE A LINK REF
+
+    description = db.Column(db.String(500), nullable=False)
+    location = db.Column(db.String(200), nullable=False)
+    date_created = db.Column(db.DateTime, default=datetime.now)
+
+    # Relationships
+    user = db.relationship('User', back_populates='posts')
+    board_games = db.relationship('Board_Game', secondary=board_game_posts, back_populates="posts")
+
+    def __repr__(self):
+        return f'<Post id="{self.post_id}" title="{self.title}">'
+
+    def to_dict(self):
+        return {
+            "id": self.post_id,
+            "title": self.title,
+            "user_id": self.user_id,
+            "board_game_id": self.board_game_id,
+            "description": self.description,
+            "location": self.location,
+            "date_created": self.date_created.isoformat()
+        }
+
+
 class Board_Game(db.Model, SerializerMixin):
     __tablename__ = 'board_games'
 
@@ -66,9 +110,7 @@ class Board_Game(db.Model, SerializerMixin):
     price = db.Column(db.Numeric(10, 2), nullable=False)
 
     # Relationships
-    posts = db.relationship('Post',
-                            back_populates='boardgame',
-                            cascade="all, delete-orphan")
+    posts = db.relationship('Post', secondary=board_game_posts, back_populates="board_games")
 
     def to_dict(self):
         return {
@@ -107,42 +149,5 @@ class Review(db.Model, SerializerMixin):
             "subject_id": self.subject_id,
             "rating": self.rating,
             "comment": self.comment,
-            "date_created": self.date_created.isoformat()
-        }
-
-
-class Post(db.Model, SerializerMixin):
-    __tablename__ = "posts"
-
-    # Fields
-
-    post_id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
-    user_id = db.Column(db.Integer,
-                        db.ForeignKey("users.user_id"), nullable=False)
-    boardgame_id = db.Column(db.Integer,
-                             db.ForeignKey("board_games.id"), nullable=False)
-
-    # IMAGE WOULD BE A LINK REF
-
-    description = db.Column(db.String(500), nullable=False)
-    location = db.Column(db.String(200), nullable=False)
-    date_created = db.Column(db.DateTime, default=datetime.now)
-
-    # Relationships
-    user = db.relationship('User', back_populates='posts')
-    boardgame = db.relationship('Boardgame', back_populates='posts')
-
-    def __repr__(self):
-        return f'<Post id="{self.post_id}" title="{self.title}">'
-
-    def to_dict(self):
-        return {
-            "id": self.post_id,
-            "title": self.title,
-            "user_id": self.user_id,
-            "boardgame_id": self.boardgame_id,
-            "description": self.description,
-            "location": self.location,
             "date_created": self.date_created.isoformat()
         }
