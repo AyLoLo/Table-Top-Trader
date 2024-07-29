@@ -10,10 +10,13 @@ from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_restful import Api, Resource
 from flask_cors import CORS
-
-from s3_utils import upload_file_to_s3
+from dotenv import load_dotenv, dotenv_values
+from utils.s3_utils import upload_file_to_s3
 
 from models import db, User, Board_Game, Post, Review
+
+load_dotenv()
+config = dotenv_values()
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
@@ -21,7 +24,11 @@ app.secret_key = os.getenv("SECRET_KEY")
 # os.urandom(24)
 
 app.config.from_object('config.Config')
+print(config)
+app.config['SQLALCHEMY_DATABASE_URI']
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS']
 
+print(app.config)
 app.json.compact = False
 
 migrate = Migrate(app, db)
@@ -39,6 +46,19 @@ s3 = boto3.client(
     aws_access_key_id=app.config["S3_KEY"],
     aws_secret_access_key=app.config["S3_SECRET"]
 )
+
+
+def upload_img():
+    with app.app_context():
+        with open("./test_image.png", 'r') as file:
+            read_file = file.read()
+            bucket = app.config["S3_BUCKET"]
+            file_name = read_file
+            # "test_image.png"
+            key_name = 'test_image3.png'
+            s3.upload_file(file_name, bucket, key_name, ExtraArgs={'ACL':'public-read'})
+
+upload_img()
 
 
 def get_current_user():
