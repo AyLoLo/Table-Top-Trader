@@ -11,10 +11,10 @@ with app.app_context():
 
     board_games = []
 
-    db.session.add_all[users]
-    db.session.add_all[posts]
-    db.session.add_all[reviews]
-    db.session.add_all[board_games]
+    db.session.add_all(users)
+    db.session.add_all(posts)
+    db.session.add_all(reviews)
+    db.session.add_all(board_games)
     db.session.commit()
 
     print("Database Successfully Seeded")

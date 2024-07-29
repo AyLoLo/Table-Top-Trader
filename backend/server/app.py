@@ -13,7 +13,7 @@ from flask_cors import CORS
 from models import db, User, Board_Game, Post, Review
 
 app = Flask(__name__)
-app.secret_key = '54e1d6161c01e73a319517df6dd892da'.join('dc1d3c022f35185032ef6b45947bcf0d')
+app.secret_key = os.getenv("SECRET_KEY")
 
 # ran python -c 'import secrets; print(secrets.token_hex())' in terminal
 # os.urandom(24)
@@ -37,7 +37,7 @@ bcrypt = Bcrypt(app)
 
 
 def get_current_user():
-    return User.query.where(User.id == session.get("user_id")).first()
+    return User.query.where(User.user_id == session.get("user_id")).first()
 
 
 def logged_in():
@@ -77,7 +77,7 @@ class Users(Resource):
     def create_user():
         json = request.json
         pw_hash = bcrypt.generate_password_hash(json['password']).decode('utf-8')
-        new_user = User(username=json['username'], password_hash=pw_hash)
+        new_user = User(username=json['username'], password_hash=pw_hash, first_name=json['first_name'], last_name=json['last_name'], email=json['email'])
         db.session.add(new_user)
         db.session.commit()
         session['user_id'] = new_user.user_id
@@ -91,7 +91,7 @@ class Users(Resource):
         user = User.query.filter(User.username == json["username"]).first()
         if user and bcrypt.check_password_hash(user.password_hash,
                                                json["password"]):
-            session["user_id"] = user.id
+            session["user_id"] = user.user_id
             return user.to_dict(), 201
         else:
             return {"error": "Invalid username or password"}, 401 
@@ -122,7 +122,7 @@ class Board_Games(Resource):
         return make_response(jsonify(response_body), 200)
 
 
-api.add_resource(Board_Games, "/boardgames")  
+api.add_resource(Board_Games, "/board-games")  
 
 
 class Posts(Resource):
@@ -137,11 +137,11 @@ class Posts(Resource):
     def post(self):
         try:
             data = request.get_json()
-            # Boardgame_id and user_id neccessary?
+            # Board_game_id and user_id neccessary?
             new_post = Post(
                 title = data.get('title'),
                 user_id = data.get('user_id'),
-                boardgame_id = data.get('boardgame_id'),
+                board_game_id = data.get('board_game_id'),
                 description = data.get('description'),
                 location = data.get('location'),
                 data_created = data.get('date_created')
