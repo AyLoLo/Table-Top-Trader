@@ -1,5 +1,6 @@
 import ipdb
 import os
+import boto3
 
 from functools import wraps
 
@@ -10,22 +11,20 @@ from flask_bcrypt import Bcrypt
 from flask_restful import Api, Resource
 from flask_cors import CORS
 
+from s3_utils import upload_file_to_s3
+
 from models import db, User, Board_Game, Post, Review
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
-
 # ran python -c 'import secrets; print(secrets.token_hex())' in terminal
 # os.urandom(24)
 
-# Configurations
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///boardgames.db'  # Update this to your database URI
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# app.config['SECRET_KEY'] = 'your_secret_key'  # Change this to a random secret key
+app.config.from_object('config.Config')
+
 app.json.compact = False
 
 migrate = Migrate(app, db)
-
 
 db.init_app(app)
 
@@ -34,6 +33,12 @@ CORS(app)
 api = Api(app)
 
 bcrypt = Bcrypt(app)
+
+s3 = boto3.client(
+    "s3",
+    aws_access_key_id=app.config["S3_KEY"],
+    aws_secret_access_key=app.config["S3_SECRET"]
+)
 
 
 def get_current_user():
@@ -126,17 +131,30 @@ api.add_resource(Board_Games, "/board-games")
 
 
 class Posts(Resource):
-
+    
     def get(self):
         posts = Post.query.all()
         response_body = []
         for post in posts:
             response_body.append(post.to_dict())
         return make_response(jsonify(response_body), 200)
+    
+    def upload_file(files):
+        if "file" not in files:
+            return "No file part"
+        file = request.files["file"]
+        if file.filename == "":
+            return "No selected file"
+        if file:
+            file_url = upload_file_to_s3(file, app.config["S3_BUCKET"])
+            return file_url
 
     def post(self):
         try:
             data = request.get_json()
+            images = data.get("images")
+            if len(images) > 0:
+                file_url = upload_file_to_s3(images, app.config["S3_BUCKET"])
             # Board_game_id and user_id neccessary?
             new_post = Post(
                 title = data.get('title'),
@@ -148,6 +166,7 @@ class Posts(Resource):
             )
             db.session.add(new_post)
             db.session.commit()
+            
             response_body = new_post.to_dict()
             return make_response(jsonify(response_body), 200)
         except ValueError:
