@@ -2,8 +2,8 @@ import { ChangeEvent, useState } from "react";
 import { Routes, Route } from 'react-router-dom';
 import { uploadFile, FileStateProperties } from "./util/s3_helper";
 
-import { Navbar } from "./components/navbar"
-import Home from "./pages/Home"
+import { Navbar } from "@components/navBar"
+import Home from "@pages/Home"
 
 
 function App() {
