@@ -1,5 +1,5 @@
 import React from "react";
-import TTTHero from "@assets/TTTHero.jpg"
+import TTTHero from "../assets/TTTHero.jpg"
 
 const Home = () => {
   return(
