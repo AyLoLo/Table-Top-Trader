@@ -48,17 +48,17 @@ s3 = boto3.client(
 )
 
 
-def upload_img():
-    with app.app_context():
-        with open("./test_image.png", 'r') as file:
-            read_file = file.read()
-            bucket = app.config["S3_BUCKET"]
-            file_name = read_file
-            # "test_image.png"
-            key_name = 'test_image3.png'
-            s3.upload_file(file_name, bucket, key_name, ExtraArgs={'ACL':'public-read'})
+# def upload_img():
+#     with app.app_context():
+#         with open("./test_image.png", 'r') as file:
+#             read_file = file.read()
+#             bucket = app.config["S3_BUCKET"]
+#             file_name = read_file
+#             # "test_image.png"
+#             key_name = 'test_image3.png'
+#             s3.upload_file(file_name, bucket, key_name, ExtraArgs={'ACL':'public-read'})
 
-upload_img()
+# upload_img()
 
 
 def get_current_user():
@@ -121,7 +121,11 @@ class Users(Resource):
         else:
             return {"error": "Invalid username or password"}, 401 
 
-    @app.get('/current_session')
+    @app.get('/session-status')
+    def isLoggedIn():
+        return logged_in(), 200
+
+    @app.get('/current-session')
     def check_session():
         if logged_in():
             return get_current_user().to_dict(), 200

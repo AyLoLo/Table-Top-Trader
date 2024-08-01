@@ -6,5 +6,6 @@ package.json
 */Pipfile*
 
 backend/server/__pycache__/
+backend/server/utils/__pycache__/
 backend/server/instance/
 backend/server/migrations/
