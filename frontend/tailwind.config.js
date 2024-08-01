@@ -4,6 +4,9 @@ module.exports = {
   plugins: [],
   theme: {
     extend: {
+      backgroundImage: {
+        'hero-background' : "url('/src/assets/TTTHero.jpg')",
+      }
       // fontFamily: {
       //   sans: ['Inter var', ...defaultTheme.fontFamily.sans],
       // },
