@@ -1,25 +1,42 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
+import { VALIDATION_LENGTH } from "constants"
 
 export const RegisterSignIn = (props: any) => {
   const [showModal, setShowModal] = useState(false);
   const [showSignIn, setShowSignIn] = useState(true);
+  const {
+    EMAIL_MAX_LEN,
+    PASSWORD_MAX_LEN,
+    FIRST_NAME_MAX_LEN,
+    LAST_NAME_MAX_LEN,
+    USERNAME_MAX_LEN,
+    EMAIL_MIN_LEN,
+    PASSWORD_MIN_LEN,
+    FIRST_NAME_MIN_LEN,
+    LAST_NAME_MIN_LEN,
+    USERNAME_MIN_LEN,
+  } = VALIDATION_LENGTH
 
   const registrationInputs = [
-    { "id": 1, "text": "Email", "labelFor": "email", "inputType": "email", "required": true, "maxlength": 50, "minlength": 8 },
-    { "id": 2, "text": "Username", "labelFor": "username", "inputType": "text", "minlength": 5, "maxlength": 15, "required": true },
+    { "id": 1, "text": "Email", "labelFor": "email", "inputType": "email", "required": true, "maxlength": EMAIL_MAX_LEN, "minlength": EMAIL_MIN_LEN },
+    { "id": 2, "text": "Username", "labelFor": "username", "inputType": "text", "minlength": 5, "maxlength": 50, "required": true },
     { "id": 3, "text": "Password", "labelFor": "password", "inputType": "password", "minlength": 8, "maxlength": 25, "required": true },
-    { "id": 4, "text": "First Name", "labelFor": "fname", "inputType": "text", "minlength": 3, "maxlength": 20, "required": true },
-    { "id": 5, "text": "Last Name", "labelFor": "lname", "inputType": "text", "minlength": 2, "maxlength": 25, "required": true },
+    { "id": 4, "text": "First Name", "labelFor": "fname", "inputType": "text", "minlength": 3, "maxlength": 50, "required": true },
+    { "id": 5, "text": "Last Name", "labelFor": "lname", "inputType": "text", "minlength": 2, "maxlength": 55, "required": true },
   ];
 
   const signinInputs = [
-    { "id": 1, "text": "Email", "labelFor": "email", "inputType": "email", "required": true, "maxlength": 50, "minlength": 8 },
+    { "id": 1, "text": "Email", "labelFor": "email", "inputType": "email", "required": true, "maxlength": 120, "minlength": 8 },
     { "id": 2, "text": "Password", "labelFor": "password", "inputType": "password", "minlength": 8, "maxlength": 25, "required": true },
   ];
   const tabs = [
     { "id": 1, "text": "Sign In" },
     { "id": 2, "text": "Register" },
   ]
+
+  const registerUser = (e) => {
+
+  }
 
   return (
     <>
