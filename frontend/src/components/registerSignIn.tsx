@@ -67,6 +67,7 @@ export const Form = (props: { formInputs: InputProp[]; showSignIn: bool; signInU
             :
             formInputs.map((inputItems: any) => (
               <div className="my-5 m-3" key={inputItems.label} >
+                <Input {...inputItems} />
               </div>
             ))
           }
