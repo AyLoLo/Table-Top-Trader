@@ -2,13 +2,14 @@ import { useState, useEffect } from "react";
 import { Routes, Route } from 'react-router-dom';
 // import { uploadFile, FileStateProperties } from "./util/s3_helper";
 
-import { Navbar } from "./components/navBar"
+import { Navbar } from "./components/navbar"
 import Home from "./pages/Home"
+import { URL } from "./constants"
 
 import { RegisterSignIn } from "./components/registerSignIn"
 
 const App = () => {
-  const [isLoggedIn, setLoggedIn] = useState<boolean>(false);
+  const [loggedInUser, setLoggedInUser] = useState<any>(null);
   // const [file, setFile] = useState<FileStateProperties>();
   // const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
   //   let files = (e.target as HTMLInputElement).files;
@@ -16,15 +17,18 @@ const App = () => {
   // };
 
   useEffect(() => {
-    fetch('http://127.0.0.1:5000/session-status')
+    fetch(`${URL}session-status`)
       .then(response => response.json())
-      .then(json => setLoggedIn(true))
-      .catch(error => { setLoggedIn(false); console.error(error) });
+      .then(json => setLoggedInUser(json))
+      .catch(error => {
+        setLoggedInUser(null);
+        console.error(error);
+      });
   }, []);
-  console.log("alksjdf", isLoggedIn);
+
   return (
     <div className="App">
-      <Navbar props={{ isLoggedIn }} />
+      <Navbar props={{ loggedInUser }} />
       {/* <button data-modal-target="static-modal" data-modal-toggle="static-modal" className="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
         Toggle modal
       </button> */}
