@@ -47,20 +47,6 @@ s3 = boto3.client(
     aws_secret_access_key=app.config["S3_SECRET"]
 )
 
-
-def upload_img():
-    with app.app_context():
-        with open("./test_image.png", 'r') as file:
-            read_file = file.read()
-            bucket = app.config["S3_BUCKET"]
-            file_name = read_file
-            # "test_image.png"
-            key_name = 'test_image3.png'
-            s3.upload_file(file_name, bucket, key_name, ExtraArgs={'ACL':'public-read'})
-
-upload_img()
-
-
 def get_current_user():
     return User.query.where(User.user_id == session.get("user_id")).first()
 
@@ -101,6 +87,7 @@ class Users(Resource):
     @app.post('/users')
     def create_user():
         json = request.json
+        print(json)
         pw_hash = bcrypt.generate_password_hash(json['password']).decode('utf-8')
         new_user = User(username=json['username'], password_hash=pw_hash, first_name=json['first_name'], last_name=json['last_name'], email=json['email'])
         db.session.add(new_user)
@@ -121,8 +108,16 @@ class Users(Resource):
         else:
             return {"error": "Invalid username or password"}, 401 
 
-    @app.get('/current_session')
+    @app.get('/session-status')
+    def isLoggedIn():
+        if logged_in():
+            return jsonify(get_current_user().to_dict()), 200
+        else:
+            return make_response(jsonify({"logged_in": bool(False)}), 200) 
+
+    @app.get('/current-session')
     def check_session():
+        print(get_current_user().to_dict())
         if logged_in():
             return get_current_user().to_dict(), 200
         else:

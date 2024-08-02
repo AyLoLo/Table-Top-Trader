@@ -4,10 +4,10 @@ import TTTLogo from "../assets/TTTLogo.jpg"
 
 export const Navbar = (props: any) => {
   const {
-    isLoggedIn: boolean,
+    loggedInUser,
   } = props;
 
-
+  console.log(loggedInUser);
   const [nav, setNav] = useState(false);
   const [postsSubNav, setPostsSubNav] = useState(false);
 
@@ -40,7 +40,7 @@ export const Navbar = (props: any) => {
         <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
           {!postsSubNav &&
             navItems
-              .filter(({ hideIfLoggedIn }) => !hideIfLoggedIn)
+              .filter(({ hideIfLoggedIn }) => loggedInUser && !hideIfLoggedIn)
               .map((item) => {
                 return (
                   <li
