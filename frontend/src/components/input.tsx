@@ -10,20 +10,21 @@ interface Input {
   type: string,
   id: string,
   placeholder: string,
-
+  name: string,
 }
 
-export const Input = (inputAttributes: Input) => {
-  const { htmlFor, label, type, id, placeholder, } = inputAttributes
+export const Input = (inputAttributes: Input, handleOnChange: any) => {
+  const { htmlFor, label, type, placeholder, name } = inputAttributes
   return (
-    <div className="flex flex-col w-full gap-2">
+    <div key={label} className="flex flex-col w-full gap-2">
       <div className="flex justify-between">
         <label htmlFor={htmlFor} className="font-semibold capitalize">
           {label}
         </label>
       </div>
       <input
-        id={id}
+        id={label}
+        name={name}
         type={type}
         className="w-full p-5 font-medium border rounded-md border-slate-300 placeholder:opacity-60"
         placeholder={placeholder}

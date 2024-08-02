@@ -24,11 +24,10 @@ app.secret_key = os.getenv("SECRET_KEY")
 # os.urandom(24)
 
 app.config.from_object('config.Config')
-print(config)
+
 app.config['SQLALCHEMY_DATABASE_URI']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']
 
-print(app.config)
 app.json.compact = False
 
 migrate = Migrate(app, db)
