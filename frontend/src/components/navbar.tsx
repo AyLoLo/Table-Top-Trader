@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
+import TTTLogo from "../assets/TTTLogo.jpg"
 
 export const Navbar = (props: any) => {
   const {
@@ -27,12 +28,14 @@ export const Navbar = (props: any) => {
   };
 
   return (
-    <nav className="bg-white border-gray-200 dark:bg-gray-900">
+    <nav className="bg-green-300 border-gray-200 dark:bg-gray-900">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
 
         {/* Logo */}
-        <h1 className="text-3xl font-bold text-[#00df9a]">TTT</h1>
-
+        <div className="grid grid-cols-5 border-gray-200 border-2">
+          <img className="h-12 w-12" src={TTTLogo} alt="Let's Roll"/>
+          <h1 className="text-3xl font-bold text-red-600 col-span-4 col-start-2">Table Top Trader</h1>
+        </div>
         {/* Desktop Navigation */}
         <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
           {!postsSubNav &&
