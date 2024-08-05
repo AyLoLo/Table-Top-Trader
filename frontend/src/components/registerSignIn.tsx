@@ -15,31 +15,11 @@ import {
 import { Input } from "./input"
 import { FormProvider, useForm } from "react-hook-form";
 import { bool } from "aws-sdk/clients/signer";
-
-interface InputProp {
-  label: string;
-  placeholder: string;
-  htmlFor: string;
-  type: string;
-  name: string;
-  validation: {
-    required: {
-      value: boolean;
-      message: string;
-    };
-    minLength: {
-      value: number;
-      message: string;
-    };
-    maxLength: {
-      value: number;
-      message: string;
-    }
-  }
-  includeInSignIn?: bool | undefined;
-}
+import { AiOutlineConsoleSql } from "react-icons/ai";
+import { InputProp } from "interfaces/InputAttribute";
 
 export const Form = (props: { formInputs: InputProp[]; showSignIn: bool; signInUser: any; registerUser: any; handleOnChange: any; }): ReactElement<any> => {
+  console.log("====", props)
   const {
     formInputs, showSignIn, signInUser, registerUser, handleOnChange
   } = props
@@ -57,15 +37,18 @@ export const Form = (props: { formInputs: InputProp[]; showSignIn: bool; signInU
           {showSignIn ?
             formInputs
               .filter((items: any) => items.includeInSignIn)
-              .map((inputItems: any) => (
-                <div className="my-5 m-3" key={inputItems.label} >
-                  <Input handleOnChange={handleOnChange} {...inputItems} />
-                </div>
-              ))
+              .map((inputItems: any) => {
+                console.log(inputItems)
+                return (
+                  <div className="my-5 m-3" key={inputItems.label} >
+                    <Input handleOnChange={handleOnChange} inputAttributes={inputItems} />
+                  </div>
+                )
+              })
             :
             formInputs.map((inputItems: any) => (
-              <div className="my-5 m-3" key={inputItems.label} >
-                <Input handleOnChange={handleOnChange} {...inputItems} />
+              <div className="my-5 m-3" key={inputItems.label}>
+                <Input handleOnChange={handleOnChange} inputAttributes={inputItems} />
               </div>
             ))
           }
@@ -75,7 +58,7 @@ export const Form = (props: { formInputs: InputProp[]; showSignIn: bool; signInU
               type="button"
               onClick={() => {
                 onSubmit();
-                return showSignIn ? signInUser : registerUser
+                showSignIn ? signInUser() : registerUser();
               }}
             >
               {showSignIn ? "Sign In" : "Register"}
@@ -211,6 +194,7 @@ export const RegisterSignIn = (props: any) => {
   ]
 
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.name, e.target.value);
     switch (e.target.name) {
       case "email":
         setEmail(e.target.value);
@@ -282,7 +266,6 @@ export const RegisterSignIn = (props: any) => {
             </ul>
           </div>
           <div className="relative p-6 flex-auto">
-            {/* TODO: FORM HERE */}
             <Form
               handleOnChange={handleOnChange}
               showSignIn={showSignIn}

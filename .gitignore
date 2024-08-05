@@ -9,3 +9,5 @@ backend/server/__pycache__/
 backend/server/utils/__pycache__/
 backend/server/instance/
 backend/server/migrations/
+
+frontend/src/.DS_Store

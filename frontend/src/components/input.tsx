@@ -1,19 +1,14 @@
+import React, { ChangeEventHandler } from "react"
 import cn from 'classnames'
 import { findInputError, isFormInvalid } from '../utils'
 import { useFormContext } from 'react-hook-form'
 import { AnimatePresence, motion } from 'framer-motion'
 import { MdError } from 'react-icons/md'
+import { InputProp } from "interfaces/InputAttribute"
 
-interface Input {
-  htmlFor: string,
-  label: string,
-  type: string,
-  id: string,
-  placeholder: string,
-  name: string,
-}
 
-export const Input = (inputAttributes: Input, handleOnChange: any) => {
+export const Input = (props: { inputAttributes: InputProp, handleOnChange: ChangeEventHandler<HTMLInputElement> }) => {
+  const { inputAttributes, handleOnChange } = props
   const { htmlFor, label, type, placeholder, name } = inputAttributes
   return (
     <div key={label} className="flex flex-col w-full gap-2">
@@ -26,6 +21,7 @@ export const Input = (inputAttributes: Input, handleOnChange: any) => {
         id={label}
         name={name}
         type={type}
+        onChange={handleOnChange}
         className="w-full p-5 font-medium border rounded-md border-slate-300 placeholder:opacity-60"
         placeholder={placeholder}
       />
