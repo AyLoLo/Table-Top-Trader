@@ -1,27 +1,17 @@
 import React, { useState, useEffect, ChangeEvent, ReactElement } from "react"
 import {
-  EMAIL_MAX_LEN,
-  PASSWORD_MAX_LEN,
-  FIRST_NAME_MAX_LEN,
-  LAST_NAME_MAX_LEN,
-  USERNAME_MAX_LEN,
-  EMAIL_MIN_LEN,
-  PASSWORD_MIN_LEN,
-  FIRST_NAME_MIN_LEN,
-  LAST_NAME_MIN_LEN,
-  USERNAME_MIN_LEN,
+  FORM_INPUTS,
   URL,
 } from "../constants"
 import { Input } from "./input"
 import { FormProvider, useForm } from "react-hook-form";
 import { bool } from "aws-sdk/clients/signer";
 import { AiOutlineConsoleSql } from "react-icons/ai";
-import { InputProp } from "interfaces/InputAttribute";
+import { InputProp } from "interfaces/InputProp";
 
-export const Form = (props: { formInputs: InputProp[]; showSignIn: bool; signInUser: any; registerUser: any; handleOnChange: any; }): ReactElement<any> => {
-  console.log("====", props)
+export const Form = (props: { showSignIn: bool; signInUser: any; registerUser: any; handleOnChange: any; }): ReactElement<any> => {
   const {
-    formInputs, showSignIn, signInUser, registerUser, handleOnChange
+    showSignIn, signInUser, registerUser, handleOnChange
   } = props
 
   const methods = useForm()
@@ -35,18 +25,15 @@ export const Form = (props: { formInputs: InputProp[]; showSignIn: bool; signInU
       <FormProvider {...methods}>
         <form className="px-8 h-3/4 pb-8 w-full">
           {showSignIn ?
-            formInputs
+            FORM_INPUTS
               .filter((items: any) => items.includeInSignIn)
-              .map((inputItems: any) => {
-                console.log(inputItems)
-                return (
-                  <div className="my-5 m-3" key={inputItems.label} >
-                    <Input handleOnChange={handleOnChange} inputAttributes={inputItems} />
-                  </div>
-                )
-              })
+              .map((inputItems: any) =>
+                <div className="my-5 m-3" key={inputItems.label} >
+                  <Input handleOnChange={handleOnChange} inputAttributes={inputItems} />
+                </div>
+              )
             :
-            formInputs.map((inputItems: any) => (
+            FORM_INPUTS.map((inputItems: any) => (
               <div className="my-5 m-3" key={inputItems.label}>
                 <Input handleOnChange={handleOnChange} inputAttributes={inputItems} />
               </div>
@@ -77,116 +64,6 @@ export const RegisterSignIn = (props: any) => {
   const [password, setPassword] = useState<string>("");
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
-  const formInputs = [
-    {
-      "label": "Email",
-      "placeholder": "Email",
-      "htmlFor": "email",
-      "type": "email",
-      "name": "email",
-      "validation": {
-        required: {
-          value: true,
-          message: 'required',
-        },
-        minLength: {
-          value: EMAIL_MIN_LEN,
-          message: `min ${EMAIL_MIN_LEN} characters`,
-        },
-        maxLength: {
-          value: EMAIL_MAX_LEN,
-          message: `max ${EMAIL_MAX_LEN} characters`,
-        }
-
-      }
-    },
-    {
-      "label": "Username",
-      "placeholder": "Username",
-      "htmlFor": "username",
-      "type": "text",
-      "name": "username",
-      "validation": {
-        required: {
-          value: true,
-          message: 'required',
-        },
-        minLength: {
-          value: USERNAME_MIN_LEN,
-          message: `min ${USERNAME_MIN_LEN} characters`,
-        },
-        maxLength: {
-          value: USERNAME_MAX_LEN,
-          message: `max ${USERNAME_MAX_LEN} characters`,
-        }
-      },
-      "includeInSignIn": true,
-    },
-    {
-      "label": "Password",
-      "placeholder": "Password",
-      "htmlFor": "password",
-      "type": "password",
-      "name": "password",
-      "validation": {
-        required: {
-          value: true,
-          message: 'required',
-        },
-        minLength: {
-          value: PASSWORD_MIN_LEN,
-          message: `min ${PASSWORD_MIN_LEN} characters`,
-        },
-        maxLength: {
-          value: PASSWORD_MAX_LEN,
-          message: `max ${PASSWORD_MAX_LEN} characters`,
-        }
-      },
-      "includeInSignIn": true,
-    },
-    {
-      "label": "First Name",
-      "placeholder": "First Name",
-      "htmlFor": "fname",
-      "type": "text",
-      "name": "firstName",
-      "validation": {
-        required: {
-          value: true,
-          message: 'required',
-        },
-        minLength: {
-          value: FIRST_NAME_MIN_LEN,
-          message: `min ${FIRST_NAME_MIN_LEN} characters`,
-        },
-        maxLength: {
-          value: FIRST_NAME_MAX_LEN,
-          message: `max ${FIRST_NAME_MAX_LEN} characters`,
-        }
-      },
-    },
-    {
-      "label": "Last Name",
-      "placeholder": "Last Name",
-      "htmlFor": "lname",
-      "type": "text",
-      "name": "lastName",
-      "validation": {
-        required: {
-          value: true,
-          message: 'required',
-        },
-        minLength: {
-          value: LAST_NAME_MIN_LEN,
-          message: `min ${LAST_NAME_MIN_LEN} characters`,
-        },
-        maxLength: {
-          value: LAST_NAME_MAX_LEN,
-          message: `max ${LAST_NAME_MAX_LEN} characters`,
-        }
-      },
-    },
-  ];
 
   const tabs = [
     { "text": "Sign In" },
@@ -194,7 +71,7 @@ export const RegisterSignIn = (props: any) => {
   ]
 
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.name, e.target.value);
+
     switch (e.target.name) {
       case "email":
         setEmail(e.target.value);
@@ -271,7 +148,6 @@ export const RegisterSignIn = (props: any) => {
               showSignIn={showSignIn}
               signInUser={signInUser}
               registerUser={registerUser}
-              formInputs={formInputs}
             />
           </div>
         </div>
