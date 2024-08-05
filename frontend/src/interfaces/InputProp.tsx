@@ -1,12 +1,3 @@
-export interface InputAttribute {
-  htmlFor: string,
-  label: string,
-  type: string,
-  id: string,
-  placeholder: string,
-  name: string,
-}
-
 export interface InputProp {
   label: string;
   placeholder: string;
@@ -25,7 +16,12 @@ export interface InputProp {
     maxLength: {
       value: number;
       message: string;
-    }
-  }
+    };
+    pattern?: {
+      value: RegExp;
+      message: string;
+    } |
+    undefined
+  };
   includeInSignIn?: boolean | undefined;
 }

@@ -1,15 +1,31 @@
-import React, { ChangeEventHandler } from "react"
+import React, { ChangeEvent, ChangeEventHandler, useState } from "react"
 import cn from 'classnames'
 import { findInputError, isFormInvalid } from '../utils'
 import { useFormContext } from 'react-hook-form'
 import { AnimatePresence, motion } from 'framer-motion'
 import { MdError } from 'react-icons/md'
-import { InputProp } from "interfaces/InputAttribute"
+import { InputProp } from "interfaces/InputProp"
 
 
 export const Input = (props: { inputAttributes: InputProp, handleOnChange: ChangeEventHandler<HTMLInputElement> }) => {
   const { inputAttributes, handleOnChange } = props
-  const { htmlFor, label, type, placeholder, name } = inputAttributes
+  const { htmlFor, label, type, placeholder, name, validation } = inputAttributes
+  const [validationError, setValidationError] = useState<string>("");
+
+  const validate = (e: ChangeEvent<HTMLInputElement>) => {
+    const text = e.target.value;
+    const { required, minLength, maxLength, pattern } = validation
+
+    if (minLength && text.length < minLength.value)
+      setValidationError(minLength.message);
+    else if (maxLength && text.length > maxLength.value)
+      setValidationError(maxLength.message);
+    else if (pattern && !text.match(pattern.value))
+      setValidationError(pattern.message);
+    else if (required && (!text || text.length === 0)) setValidationError(required.message);
+    else setValidationError("");
+  }
+
   return (
     <div key={label} className="flex flex-col w-full gap-2">
       <div className="flex justify-between">
@@ -17,11 +33,12 @@ export const Input = (props: { inputAttributes: InputProp, handleOnChange: Chang
           {label}
         </label>
       </div>
+      {validationError && <p className="text-red-50">validationError</p>}
       <input
         id={label}
         name={name}
         type={type}
-        onChange={handleOnChange}
+        onChange={(e) => { validate(e); handleOnChange(e); }}
         className="w-full p-5 font-medium border rounded-md border-slate-300 placeholder:opacity-60"
         placeholder={placeholder}
       />

@@ -65,14 +65,14 @@ class User(db.Model, SerializerMixin):
 
     @validates('first_name')
     def validate_first_name(self, key, value):
-        if not (3 <= value <= 25) and not (value[0].isupper()):
-            raise ValueError("First name must begin with a capital and be between 2 and 26 characters")
+        if not (3 <= value <= 25):
+            raise ValueError("First name must be between 2 and 26 characters")
         return value
     
     @validates('last_name')
     def validate_last_name(self, key, value):
-        if not (2 <= value <= 25) and not (value[0].isuppper()):
-            raise ValueError('Last name must begin with a capital and between 1 and 26 characters')
+        if not (2 <= value <= 25):
+            raise ValueError('Last name must be between 1 and 26 characters')
         return value
         
     @validates('password')
