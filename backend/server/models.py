@@ -1,6 +1,9 @@
+import re
+
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
 from sqlalchemy_serializer import SerializerMixin
+from sqlalchemy.orm import validates
 from datetime import datetime
 
 metadata = MetaData(naming_convention={
@@ -15,12 +18,13 @@ board_game_posts = db.Table('board_game_posts',
                             db.Column('post_id', db.ForeignKey('posts.post_id'), primary_key=True)
 )
 
+
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
     # Fields
     user_id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), nullable=False, unique=True)
+    username = db.Column(db.String(25), nullable=False, unique=True)
 
     # WILL BE USING BCRYPT FOR PASSWORD
     password_hash = db.Column(db.String(120), nullable=False)
@@ -47,6 +51,36 @@ class User(db.Model, SerializerMixin):
                                        back_populates='subject',
                                        cascade="all, delete-orphan")
 
+    @validates('username')
+    def validate_username(self, key, value):
+        if not (5 <= value <= 25) and (re.search(r'[^\w-]|_')):
+            raise ValueError("Username must be between 5 and 25 characters")
+        return value
+    
+    @validates('email')
+    def validate_email(self, key, value):
+        if not (5 <= value <= 120):
+            raise ValueError("Email must be between 5 and 120 characters")
+        return value
+
+    @validates('first_name')
+    def validate_first_name(self, key, value):
+        if not (3 <= value <= 25) and not (value[0].isupper()):
+            raise ValueError("First name must begin with a capital and be between 2 and 26 characters")
+        return value
+    
+    @validates('last_name')
+    def validate_last_name(self, key, value):
+        if not (2 <= value <= 25) and not (value[0].isuppper()):
+            raise ValueError('Last name must begin with a capital and between 1 and 26 characters')
+        return value
+        
+    @validates('password')
+    def validate_password_hash(self, key, value):
+        if not (8 <= value <= 25):
+            raise ValueError('Password must be between 7 and 26 characters') 
+        return value
+        
     # Login/Signup Data
     def __repr__(self):
         return f'`<User id = "{self.user_id}" username="{self.username}">`'
@@ -60,7 +94,6 @@ class User(db.Model, SerializerMixin):
             "email": self.email,
             "date_created": self.date_created.isoformat()
         }
-
 
 
 class Post(db.Model, SerializerMixin):
