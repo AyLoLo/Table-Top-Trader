@@ -33,8 +33,7 @@ export const FORM_INPUTS = [
         message: `max ${EMAIL_MAX_LEN} characters`,
       },
       pattern: {
-        value:
-          /^(([^<>()[]\.,;:\s@"]+(.[^<>()[]\.,;:\s@"]+)*)|(".+"))@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z-0-9]+.)+[a-zA-Z]{2,}))$/,
+        value: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
         message: "Invalid Email",
       },
     }
@@ -59,7 +58,8 @@ export const FORM_INPUTS = [
         message: `max ${USERNAME_MAX_LEN} characters`,
       },
       pattern: {
-        value: /[^\w-]|_/
+        value: /^[a-zA-Z0-9_]*$/,
+        message: "Only alphanumeric chars and _ allowed"
       }
     },
     "includeInSignIn": true,

@@ -131,7 +131,6 @@ export const RegisterSignIn = (props: any) => {
 
         <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
           <div className="flex items-start justify-between border-b border-solid border-gray-300 rounded-t ">
-            {/* <h3 className="text-3xl font=semibold">Sign In</h3> */}
             <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500">
               {
                 tabs.map(({ text }) =>

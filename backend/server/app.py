@@ -84,34 +84,12 @@ class Users(Resource):
     # User Signup
 
     @app.post('/users')
-    def create_user(self):
-        
-        users = Users.query.all() 
+    def create_user():
+         
         json = request.json
         print(json)
         pw_hash = bcrypt.generate_password_hash(json['password']).decode('utf-8')
         new_user = User(username=json['username'], password_hash=pw_hash, first_name=json['first_name'], last_name=json['last_name'], email=json['email'])
-        # validations
-        # check for dupe user/email
-        # check for password validation
-        while new_user.username == False :
-            try: 
-                if not new_user.username in users.user.username:
-                    new_user.username = True
-            except ValueError:
-                print('Username is already taken')
-            try:
-                if not new_user.email in users.user.email:
-                    new_user.email = True
-            except ValueError:
-                print('Email already exists')
-            try:
-                if 7 < len(new_user.password) < 26:
-                    new_user.password = True 
-            except ValueError:
-                print('Password must be between 7 and 26 characters')
-        
-         
         db.session.add(new_user)
         db.session.commit()
         session['user_id'] = new_user.user_id
