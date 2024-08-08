@@ -32,8 +32,8 @@ export const Input = (props: { inputAttributes: InputProp, handleOnChange: Chang
         <label htmlFor={htmlFor} className="font-semibold capitalize">
           {label}
         </label>
+        {validationError && <p className="text-red-500 max-w-xs">{validationError}</p>}
       </div>
-      {validationError && <p className="text-red-50">validationError</p>}
       <input
         id={label}
         name={name}
