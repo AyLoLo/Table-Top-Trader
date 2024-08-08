@@ -9,9 +9,9 @@ import { bool } from "aws-sdk/clients/signer";
 import { AiOutlineConsoleSql } from "react-icons/ai";
 import { InputProp } from "interfaces/InputProp";
 
-export const Form = (props: { showSignIn: bool; signInUser: any; registerUser: any; handleOnChange: any; }): ReactElement<any> => {
+export const Form = (props: { showSignIn: bool; signInUser: any; registerUser: any; handleOnChange: any; error: string }): ReactElement<any> => {
   const {
-    showSignIn, signInUser, registerUser, handleOnChange
+    showSignIn, signInUser, registerUser, handleOnChange, error
   } = props
 
   const methods = useForm()
@@ -24,6 +24,7 @@ export const Form = (props: { showSignIn: bool; signInUser: any; registerUser: a
     <>
       <FormProvider {...methods}>
         <form className="px-8 h-3/4 pb-8 w-full">
+          {error && <p className="text-red-500">{error}</p>}
           {showSignIn ?
             FORM_INPUTS
               .filter((items: any) => items.includeInSignIn)
@@ -64,7 +65,7 @@ export const RegisterSignIn = (props: any) => {
   const [password, setPassword] = useState<string>("");
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
-
+  const [error, setError] = useState<string>("");
   const tabs = [
     { "text": "Sign In" },
     { "text": "Register" },
@@ -122,10 +123,12 @@ export const RegisterSignIn = (props: any) => {
         email
       }),
       headers: myHeaders,
-    }).then(response => {
-      if (response.ok) return response.json();
-      return response.json().then(response => { throw new Error(response.error) })
-    }).catch(error => console.log(error.message))
+    }).then(response => response.json()).then(response => {
+      if (response.ok) return response;
+      console.log("hello world")
+      // return response.json().then(response => { throw new Error(response.error) })
+      setError(response.error)
+    }).catch(error => console.error(error))
   }
 
   return (
@@ -146,6 +149,7 @@ export const RegisterSignIn = (props: any) => {
           </div>
           <div className="relative p-6 flex-auto">
             <Form
+              error={error}
               handleOnChange={handleOnChange}
               showSignIn={showSignIn}
               signInUser={signInUser}
