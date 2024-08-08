@@ -88,12 +88,15 @@ class Users(Resource):
          
         json = request.json
         print(json)
-        pw_hash = bcrypt.generate_password_hash(json['password']).decode('utf-8')
-        new_user = User(username=json['username'], password_hash=pw_hash, first_name=json['first_name'], last_name=json['last_name'], email=json['email'])
-        db.session.add(new_user)
-        db.session.commit()
-        session['user_id'] = new_user.user_id
-        return new_user.to_dict(), 201
+        try:
+            pw_hash = bcrypt.generate_password_hash(json['password']).decode('utf-8')
+            new_user = User(username=json['username'].lower(), password_hash=pw_hash, first_name=json['first_name'], last_name=json['last_name'], email=json['email'].lower())
+            db.session.add(new_user)
+            db.session.commit()
+            session['user_id'] = new_user.user_id
+            return new_user.to_dict(), 201
+        except ValueError as e:
+            return make_response(jsonify({"error": str(e)}), 409)
 
     # Session Login/Logout
 
