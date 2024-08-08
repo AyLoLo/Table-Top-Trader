@@ -54,34 +54,39 @@ class User(db.Model, SerializerMixin):
     @validates('username')
     def validate_username(self, key, value):
         if not (5 <= len(value) <= 25) and (re.search(r'^[a-zA-Z0-9_]*$', value)):
-            raise AssertionError("Username must be between 5 and 25 characters while only containing letters and numbers")
+            raise ValueError("Username must be between 5 and 25 characters")
+        if not (re.search(r'^[a-zA-Z0-9_]*$', value)):
+            raise ValueError("Username must contain only letters and numbers")
+        if User.query.filter_by(username=value).first():
+            raise ValueError("Username already exists")
         return value
     
     @validates('email')
     def validate_email_len(self, key, value):
         if not (5 <= len(value) <= 120):
-            raise AssertionError("Email must be between 5 and 120 characters")
-        return value
-    def validate_email_structure(self, key, value):
+            raise ValueError("Email must be between 5 and 120 characters")
         if not (re.search(r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)', value)):
-            raise AssertionError("Email is not valid")
-
+            raise ValueError("Email is not valid")
+        if User.query.filter_by(email=value).first():
+            raise ValueError("Email already exists")
+        return value
+    
     @validates('first_name')
     def validate_first_name(self, key, value):
         if not (3 <= len(value) <= 25):
-            raise AssertionError("First name must be between 2 and 26 characters")
+            raise ValueError("First name must be between 2 and 26 characters")
         return value
     
     @validates('last_name')
     def validate_last_name(self, key, value):
         if not (2 <= len(value) <= 25):
-            raise AssertionError('Last name must be between 1 and 26 characters')
+            raise ValueError('Last name must be between 1 and 26 characters')
         return value
         
     @validates('password')
     def validate_password_hash(self, key, value):
         if not (8 <= len(value) <= 25):
-            raise AssertionError('Password must be between 7 and 26 characters') 
+            raise ValueError('Password must be between 7 and 26 characters') 
         return value
         
     # Login/Signup Data
