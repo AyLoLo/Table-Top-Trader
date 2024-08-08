@@ -122,9 +122,12 @@ export const RegisterSignIn = (props: any) => {
         email
       }),
       headers: myHeaders,
-    });
-    console.log(response);
+    }).then(response => {
+      if (response.ok) return response.json();
+      return response.json().then(response => { throw new Error(response.error) })
+    }).catch(error => console.log(error.message))
   }
+
   return (
     <div className="flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none bg-gray-700 bg-opacity-70">
       <div className="relative w-auto my-6 mx-auto max-w-3xl">
