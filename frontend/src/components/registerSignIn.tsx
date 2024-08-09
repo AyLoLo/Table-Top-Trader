@@ -31,8 +31,8 @@ export const Form = (props: {
 
   const methods = useForm()
 
-  const onSubmit = methods.handleSubmit((data) => {
-    console.log(data)
+  const onSubmit = methods.handleSubmit(() => {
+    showSignIn ? signInUser() : registerUser();
   })
 
   return (
@@ -59,20 +59,18 @@ export const Form = (props: {
             <button
               className="text-white bg-green-300 active:bg-green-700 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
               type="button"
-              onClick={() => {
-                onSubmit();
-                showSignIn ? signInUser() : registerUser();
-              }}
+              onClick={onSubmit}
             >
               {showSignIn ? "Sign In" : "Register"}
             </button>
-            {allowExit && <button
-              className="text-white bg-red-500 active:bg-red-700 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
-              type="button"
-              onClick={() => hideModal()}
-            >
-              Close
-            </button>}
+            {allowExit &&
+              <button
+                className="text-white bg-red-500 active:bg-red-700 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
+                type="button"
+                onClick={() => hideModal()}
+              >
+                Close
+              </button>}
           </div>
         </form>
       </FormProvider >
@@ -128,7 +126,8 @@ export const RegisterSignIn = (props: any) => {
       }),
       headers: myHeaders,
     }).then(response => response.json()).then(response => {
-      if (response.ok) {
+      console.log(response);
+      if (!response.error) {
         hideModal();
         return response;
       }
@@ -150,7 +149,8 @@ export const RegisterSignIn = (props: any) => {
       }),
       headers: myHeaders,
     }).then(response => response.json()).then(response => {
-      if (response.ok) {
+      console.log(response);
+      if (!response.error) {
         hideModal();
         return response;
       }
