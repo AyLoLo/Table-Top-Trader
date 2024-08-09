@@ -6,7 +6,7 @@ from functools import wraps
 
 from flask import Flask, make_response, jsonify, request, session, redirect
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate 
+from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_restful import Api, Resource
 from flask_cors import CORS
@@ -45,6 +45,7 @@ s3 = boto3.client(
     aws_access_key_id=app.config["S3_KEY"],
     aws_secret_access_key=app.config["S3_SECRET"]
 )
+
 
 def get_current_user():
     return User.query.where(User.user_id == session.get("user_id")).first()
@@ -151,7 +152,9 @@ api.add_resource(Board_Games, "/board-games")
 class Posts(Resource):
     
     def get(self):
-        posts = Post.query.all()
+        # posts = Post.query.all()
+        query = db.session.select(Posts).order_by(Post.timestamp.desc())
+        posts = db.paginate(query, page=1, per_page=20, error_out=False).items
         response_body = []
         for post in posts:
             response_body.append(post.to_dict())
