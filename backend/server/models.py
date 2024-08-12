@@ -18,7 +18,6 @@ board_game_posts = db.Table('board_game_posts',
                             db.Column('post_id', db.ForeignKey('posts.post_id'), primary_key=True)
 )
 
-
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
@@ -120,12 +119,17 @@ class Post(db.Model, SerializerMixin):
     # IMAGE WOULD BE A LINK REF
 
     description = db.Column(db.String(500), nullable=False)
-    location = db.Column(db.String(200), nullable=False)
-    date_created = db.Column(db.DateTime, default=datetime.now)
+    longitude = db.Column(db.Numeric, nullable=False)
+    latitude = db.Column(db.Numeric, nullable=False)
+    price = db.Column(db.Numeric(10, 2), nullable=False)
 
+    date_created = db.Column(db.DateTime, default=datetime.now)
     # Relationships
     user = db.relationship('User', back_populates='posts')
     board_games = db.relationship('Board_Game', secondary=board_game_posts, back_populates="posts")
+    images = db.relationship('Post_Image',
+                             back_populates='post_images', 
+                             cascade="all, delete-orphan")
 
     def __repr__(self):
         return f'<Post id="{self.post_id}" title="{self.title}">'
@@ -137,7 +141,9 @@ class Post(db.Model, SerializerMixin):
             "user_id": self.user_id,
             "board_game_id": self.board_game_id,
             "description": self.description,
-            "location": self.location,
+            "longitude": self.longitude,
+            "latitude": self.latitude,
+            "price": str(self.price),
             "date_created": self.date_created.isoformat()
         }
 
@@ -148,7 +154,6 @@ class Board_Game(db.Model, SerializerMixin):
     # Fields
     board_game_id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
-    price = db.Column(db.Numeric(10, 2), nullable=False)
 
     # Relationships
     posts = db.relationship('Post', secondary=board_game_posts, back_populates="board_games")
@@ -157,19 +162,40 @@ class Board_Game(db.Model, SerializerMixin):
         return {
             "id": self.board_game_id,
             "title": self.title,
-            "price": str(self.price)  # Convert to string for serialization
         }
 
+class Post_Image(db.Model, SerializerMixin):
+    __tablename__ = 'post_images'
 
+    post_image_id = db.Column(db.Integer, primary_key=True)
+    post_id = db.Column(db.Integer,
+                        db.ForeignKey("posts.post_id"), 
+                        nullable=False)
+    post_image_key = db.Column(db.String(250), nullable=False)
+    date_created = db.Column(db.DateTime, default=datetime.now)
+
+    def __repr__(self):
+        return f'<Post_Image id="{self.post_image_id} post_id="{self.post_id} post_image_key="{self.post_image_key}">'
+
+    def to_dict(self):
+        return {
+            "post_image_id": self.post_image_id,
+            "post_id": self.post_id,
+            "post_image_key": self.post_image_key,
+            "date_created": self.date_created.isoformat()
+        }
+    
 class Review(db.Model, SerializerMixin):
     __tablename__ = 'reviews'
 
     # Fields
     review_id = db.Column(db.Integer, primary_key=True)
     reviewer_id = db.Column(db.Integer,
-                            db.ForeignKey("users.user_id"), nullable=False)
+                            db.ForeignKey("users.user_id"), 
+                            nullable=False)
     subject_id = db.Column(db.Integer,
-                           db.ForeignKey("users.user_id"), nullable=False)
+                           db.ForeignKey("users.user_id"), 
+                           nullable=False)
     rating = db.Column(db.Integer, nullable=False)
     comment = db.Column(db.String(500))
     date_created = db.Column(db.DateTime, default=datetime.now)
