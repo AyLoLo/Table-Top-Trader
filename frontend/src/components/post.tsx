@@ -1,21 +1,20 @@
 import React, {useState, useEffect} from "react";
-import { URL } from "./constants"
 
-function Post() {
-
-    const [posts, setPosts] = useState([])
+export const Post = ({post, loading}) => {
+    if (loading) {
+        return <h1>Loading...</h1>;
+    }
     
-    useEffect(() => {
-        fetch(`${URL}posts`)
-        .then(response => response.json())
-        .then(postData => setPosts(postData))
-    }, [])
-
     return (
-        <div>
-            empty spaces
+        <div className="text-white border-red-900 md:border 4 grid grid-rows-3 pl-5 pt-5 relative">
+            <h1 className="text-green-600 grid grid-rows-2">
+                <span>{post.title}</span>
+                <span>{post.price}</span>
+                <span>{post.date_created}</span>
+            </h1>
+            <span>
+                {post.description}
+            </span>
         </div>
-    )
+    );
 }
-
-export default Post;
