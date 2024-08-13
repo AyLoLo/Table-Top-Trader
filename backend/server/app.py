@@ -6,14 +6,15 @@ from functools import wraps
 
 from flask import Flask, make_response, jsonify, request, session, redirect
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate 
+from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_restful import Api, Resource
 from flask_cors import CORS
 from dotenv import load_dotenv, dotenv_values
 from utils.s3_utils import upload_file_to_s3
+from sqlalchemy import select
 
-from models import db, User, Board_Game, Post, Review
+from models import db, User, Board_Game, Post, Review, Post_Image
 
 load_dotenv()
 config = dotenv_values()
@@ -45,6 +46,7 @@ s3 = boto3.client(
     aws_access_key_id=app.config["S3_KEY"],
     aws_secret_access_key=app.config["S3_SECRET"]
 )
+
 
 def get_current_user():
     return User.query.where(User.user_id == session.get("user_id")).first()
@@ -87,7 +89,6 @@ class Users(Resource):
     def create_user():
          
         json = request.json
-        print(json)
         try:
             pw_hash = bcrypt.generate_password_hash(json['password']).decode('utf-8')
             new_user = User(username=json['username'].lower(), password_hash=pw_hash, first_name=json['first_name'], last_name=json['last_name'], email=json['email'].lower())
@@ -120,7 +121,6 @@ class Users(Resource):
 
     @app.get('/current-session')
     def check_session():
-        print(get_current_user().to_dict())
         if logged_in():
             return get_current_user().to_dict(), 200
         else:
@@ -136,7 +136,17 @@ api.add_resource(Users, '/users')
 
 
 class Board_Games(Resource):
-
+    @app.post("/board-games")
+    def create_board_game():
+        json = request.json
+        try:
+            new_bg = Board_Game(title=json['title'])
+            db.session.add(new_bg)
+            db.session.commit()
+            return new_bg.to_dict(), 201
+        except ValueError as e:
+            return make_response(jsonify({"error": str(e)}), 409)
+        
     def get(self):
         board_games = Board_Game.query.all()
         response_body = []
@@ -149,42 +159,53 @@ api.add_resource(Board_Games, "/board-games")
 
 
 class Posts(Resource):
-    
+
     def get(self):
-        posts = Post.query.all()
+        page = request.args.get('page')
+        # TODO: check to see if select is correct
+        post_query = select(Post).order_by(Post.date_created.desc()).join(Post.images)
+        posts = db.paginate(post_query, page=int(page), per_page=20, error_out=False).items
+
         response_body = []
         for post in posts:
             response_body.append(post.to_dict())
         return make_response(jsonify(response_body), 200)
     
-    def upload_file(files):
-        if "file" not in files:
-            return "No file part"
-        file = request.files["file"]
-        if file.filename == "":
-            return "No selected file"
-        if file:
-            file_url = upload_file_to_s3(file, app.config["S3_BUCKET"])
-            return file_url
-
+    @app.post("/post")
     def post(self):
         try:
+            user = get_current_user()
             data = request.get_json()
-            images = data.get("images")
-            if len(images) > 0:
-                file_url = upload_file_to_s3(images, app.config["S3_BUCKET"])
-            # Board_game_id and user_id neccessary?
+
             new_post = Post(
                 title = data.get('title'),
-                user_id = data.get('user_id'),
-                board_game_id = data.get('board_game_id'),
+                user_id = user.user_id,
                 description = data.get('description'),
-                location = data.get('location'),
-                data_created = data.get('date_created')
+                longitude = data.get('longitude'),
+                latitude = data.get('latitude'),
+                price = data.get('price')
             )
-            db.session.add(new_post)
-            db.session.commit()
             
+            board_game_ids = data.get('board_game_ids', [])
+            for board_game_id in board_game_ids:
+                board_game = Board_Game.query.get(board_game_id)
+                if board_game:
+                    new_post.board_games.append(board_game)
+
+            db.session.add(new_post)
+            db.session.flush()
+            
+            images = data.get('images')
+            if images:
+                for img in images:
+                    image = Post_Image(
+                        post_id = new_post.post_id,
+                        post_image_key = img
+                    )
+                    db.session.add(image)
+                
+            db.session.commit()
+
             response_body = new_post.to_dict()
             return make_response(jsonify(response_body), 200)
         except ValueError:
@@ -195,16 +216,23 @@ class Posts(Resource):
 api.add_resource(Posts, '/posts')
 
 
+class PostImages(Resource):
+    def get_by_post_id(self, post_id):
+        images = PostImages.query.filter_by(post_id=post_id)
+        images_res = []
+        for img in images:
+            images_res.append(img.to_dict())
+        return images_res
+    
+
 class PostsByUser(Resource):
 
     def get(self, username):
-
         user = User.query.filter_by(username=username).first()
         if not user:
             response_body = {"error": "User and their posts not found"}
             return make_response(jsonify(response_body), 404)
         response_body = [post.to_dict() for post in user.posts]
-
         return make_response(jsonify(response_body), 200)
 
     @login_required
@@ -247,6 +275,16 @@ class Reviews(Resource):
         for review in reviews:
             response_body.append(review.to_dict())
         return make_response(jsonify(response_body), 200)
+    
+    def get_by_user_id(self):
+        data = request.get_json()
+        user_id = data.get("user_id")
+        reviews = Review.query.filter_by(user_id=user_id)
+        response_body = []
+        for review in reviews:
+            response_body.append(review.to_dict())
+        return make_response(jsonify(response_body), 200)
+
 
     def post(self):
         try:
