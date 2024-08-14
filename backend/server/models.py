@@ -137,7 +137,7 @@ class Post(db.Model, SerializerMixin):
             "description": self.description,
             "longitude": self.longitude,
             "latitude": self.latitude,
-            "price": str(self.price),
+            "price": self.price,
             "images": [image.to_dict() for image in self.images],
             "date_created": self.date_created.isoformat()
         }
