@@ -3,9 +3,9 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 // import { uploadFile, FileStateProperties } from "./util/s3_helper";
 
 import { Navbar } from "./components/navbar"
-import Home from "./pages/Home"
-import Posts from "./pages/Posts";
-import Pagination from "./components/pagination"
+import { Home } from "./pages/Home"
+import { Posts } from "./pages/Posts";
+import { Pagination } from "./components/pagination"
 import { RegisterSignIn } from "./components/registerSignIn"
 
 import { URL } from "./constants"
@@ -14,31 +14,11 @@ const App = () => {
   let location = useLocation();
   const [loggedInUser, setLoggedInUser] = useState<boolean>(false);
   const [registerSigninModal, setRegisterSigninModal] = useState<boolean>(false);
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(true)
-  const [postsPerPage, setPostsPerPage] = useState(10)
   // const [file, setFile] = useState<FileStateProperties>();
   // const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
   //   let files = (e.target as HTMLInputElement).files;
   //   files && files[0] && setFile(files[0]);
   // };
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      setLoading(true);
-      try {
-        // correct fetch?
-        const response = await fetch(`${URL}posts`)
-        const data = await response.json();
-        setPosts(data);
-        setLoading(false);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchPosts()
-  }, []);
 
   useEffect(() => {
     fetch(`${URL}session-status`)
@@ -49,11 +29,6 @@ const App = () => {
         console.error(error);
       });
   }, []);
-
-  // not sure what to do with this yet
-  const handlePagination = (pageNumber) => {
-    setCurrentPage (pageNumber);
-  };
 
   return (
     <div className="App">
@@ -75,7 +50,10 @@ const App = () => {
       <>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/posts" element={<><Posts posts={posts} loading={loading}/><Pagination/></>} />
+          <Route path="/posts" element={<>
+            <Posts />
+            <Pagination />
+          </>} />
             {/* <Route path="/about" element={<About />} />
             <Route path="/profile element={<Profile />} /> */}
         </Routes>
