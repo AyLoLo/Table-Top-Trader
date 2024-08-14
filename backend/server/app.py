@@ -146,7 +146,7 @@ class Board_Games(Resource):
             return new_bg.to_dict(), 201
         except ValueError as e:
             return make_response(jsonify({"error": str(e)}), 409)
-        
+
     def get(self):
         board_games = Board_Game.query.all()
         response_body = []
@@ -161,7 +161,7 @@ api.add_resource(Board_Games, "/board-games")
 class Posts(Resource):
 
     def get(self):
-        page = request.args.get('page')
+        page = request.args.get('page', 1)
         # TODO: check to see if select is correct
         post_query = select(Post).order_by(Post.date_created.desc()).join(Post.images)
         posts = db.paginate(post_query, page=int(page), per_page=20, error_out=False).items
