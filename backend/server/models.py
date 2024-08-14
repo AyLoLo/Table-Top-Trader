@@ -55,7 +55,7 @@ class User(db.Model, SerializerMixin):
 
     @validates('username')
     def validate_username(self, key, value):
-        if not (5 <= len(value) <= 25) and (re.search(r'^[a-zA-Z0-9_]*$', value)):
+        if not (5 <= len(value) <= 25):
             raise ValueError("Username must be between 5 and 25 characters")
         if not (re.search(r'^[a-zA-Z0-9_]*$', value)):
             raise ValueError("Username must contain only letters and numbers")
@@ -78,7 +78,7 @@ class User(db.Model, SerializerMixin):
         if not (3 <= len(value) <= 25):
             raise ValueError("First name must be between 2 and 26 characters")
         return value
-    
+
     @validates('last_name')
     def validate_last_name(self, key, value):
         if not (2 <= len(value) <= 25):
@@ -120,11 +120,11 @@ class Post(db.Model, SerializerMixin):
     latitude = db.Column(db.Numeric, nullable=False)
     price = db.Column(db.Numeric(10, 2), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.now)
+
     # Relationships
     user = db.relationship("User", back_populates="posts")
     board_games = db.relationship("Board_Game", secondary=board_game_posts, back_populates="posts")
     images = db.relationship("Post_Image", backref="post")
-
 
     def __repr__(self):
         return f'<Post id="{self.post_id}" title="{self.title}">'
@@ -138,6 +138,7 @@ class Post(db.Model, SerializerMixin):
             "longitude": self.longitude,
             "latitude": self.latitude,
             "price": str(self.price),
+            "images": [image.to_dict() for image in self.images],
             "date_created": self.date_created.isoformat()
         }
 
@@ -155,8 +156,6 @@ class Post_Image(db.Model, SerializerMixin):
 
     def to_dict(self):
         return {
-            "post_image_id": self.post_image_id,
-            "post_id": self.post_id,
             "post_image_key": self.post_image_key,
             "date_created": self.date_created.isoformat()
         }
@@ -198,7 +197,7 @@ class Review(db.Model, SerializerMixin):
                               back_populates="recieved_reviews")
 
     def __repr__(self):
-        return f'<Review id="{self.review_id} rating="{self.rating}">'
+        return f'<Review id="{self.review_id}" rating="{self.rating}">'
 
     def to_dict(self):
         return {
