@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from "react";
+import React from "react";
 
-export const Post = ({post, loading}) => {
+export const Post = (post: any, loading: boolean) => {
     if (loading) {
         return <h1>Loading...</h1>;
     }
