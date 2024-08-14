@@ -133,7 +133,7 @@ class Post(db.Model, SerializerMixin):
         return {
             "id": self.post_id,
             "title": self.title,
-            "user_id": self.user_id,
+            "user": self.user.to_dict(), 
             "description": self.description,
             "longitude": self.longitude,
             "latitude": self.latitude,
