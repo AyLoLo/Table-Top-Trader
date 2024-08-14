@@ -156,8 +156,6 @@ class Post_Image(db.Model, SerializerMixin):
 
     def to_dict(self):
         return {
-            "post_image_id": self.post_image_id,
-            "post_id": self.post_id,
             "post_image_key": self.post_image_key,
             "date_created": self.date_created.isoformat()
         }
