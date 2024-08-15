@@ -6,8 +6,8 @@ import {
 import { Input } from "./input"
 import { FormProvider, useForm } from "react-hook-form";
 import { bool } from "aws-sdk/clients/signer";
-import { AiOutlineConsoleSql } from "react-icons/ai";
-import { InputProp } from "interfaces/InputProp";
+// import { AiOutlineConsoleSql } from "react-icons/ai";
+// import { InputProp } from "interfaces/InputProp";
 
 export const Form = (props: {
   showSignIn: bool;
