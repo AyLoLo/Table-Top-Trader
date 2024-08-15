@@ -164,7 +164,7 @@ export const RegisterSignIn = (props: any) => {
             <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 w-full">
               {
                 tabs.map(({ text }) =>
-                  <li className="w-3/6">
+                  <li key={text} className="w-3/6">
                     <button key={text} onClick={() => setShowSignIn(text !== "Register")} className={`w-full inline-block p-4 text-blue-600 border-solid border border-solid
 	border-gray-300 rounded-t-lg active hover:text-blue-400 ${(showSignIn && text === "Sign In") || (!showSignIn && text === "Register") ? "bg-gray-100" : "bg-gray-300"}`}>{text}</button>
                   </li>
