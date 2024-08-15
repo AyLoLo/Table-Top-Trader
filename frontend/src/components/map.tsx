@@ -17,6 +17,7 @@ export const Map = (props: any) => {
   const [zoomLevel, setZoomLevel] = useState(10);
   const [loading, setLoading] = useState(true)
   const [zipcodes, setZipcodes] = useState([])
+  // const map = useMap()
 
   let DefaultIcon = L.icon({
     iconUrl: icon,
@@ -42,6 +43,10 @@ export const Map = (props: any) => {
       setLoading(false);
   }, [coords]);
 
+  // useEffect(() => {
+  //   map.flyTo([coords.latitude, coords.longitude], zoomLevel);
+  // }, [coords, zoomLevel, map])
+
   const onZipUpdate = (e: any) => {
     if (e.key === 'Enter') {
       console.log('do validate');
@@ -65,7 +70,13 @@ export const Map = (props: any) => {
     loading ?
       <div>loading</div> :
       <>
-        <input className="p-1 top-24 left-20 w-40 h-12 z-50 absolute " placeholder="zipcode" list="zipcodes" onSubmit={onSubmitZip} onChange={onZipUpdate} />
+        <input
+          className="p-1 top-24 left-20 w-40 h-12 z-50 absolute"
+          placeholder="zipcode"
+          list="zipcodes"
+          onKeyDown={(e) => e.key === 'Enter' && onSubmitZip(e)}
+          onChange={onZipUpdate} />
+
         <datalist id="zipcodes">
           {zipcodes.map(code => <option value={code} onClick={onSubmitZip} />)}
         </datalist>
@@ -99,7 +110,6 @@ export const Map = (props: any) => {
                     {images?.length > 0 &&
                       <img src={`${S3_URL}${images[0].post_image_key}`} alt="board game post thumbnail" />
                     }
-
                     <h2 className="font-bold text-lg">{title}</h2>
                     <p>{user.username}</p>
                     <p>${price}</p>
@@ -109,7 +119,6 @@ export const Map = (props: any) => {
                     <p>Posted on: {date}</p>
                   </Popup>
                 </Marker>
-
               );
             })}
           </MarkerClusterGroup>

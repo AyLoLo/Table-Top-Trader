@@ -1,5 +1,5 @@
 from app import app
-from models import db, User, Board_Game, Post, Review, Zipcode
+from models import db, Zipcode
 from pprint import pprint 
 import re
 
