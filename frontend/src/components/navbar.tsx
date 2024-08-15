@@ -19,7 +19,7 @@ export const Navbar = (props: any) => {
   const navItems = [
     { id: 1, text: "Home", link: "/" },
     { id: 2, text: "Sign up/Sign In", hideIfLoggedIn: true, link: "", action: () => { console.log("show logged in user"); setRegisterSigninModal(true) } },
-    { id: 3, text: "BG Posts", link: "", hideIfLoggedOut: true, subNavBar: setPostsSubNav },
+    { id: 3, text: "BG Posts", link: "/posts", hideIfLoggedOut: true, subNavBar: setPostsSubNav },
   ];
 
   // Toggle function to handle the navbar"s display
