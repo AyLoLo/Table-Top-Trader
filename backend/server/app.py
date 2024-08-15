@@ -153,7 +153,7 @@ class Posts(Resource):
     
     def get(self):
         # posts = Post.query.all()
-        query = db.session.select(Posts).order_by(Post.timestamp.desc())
+        query = Post.query.order_by(Post.date_created.desc())
         posts = db.paginate(query, page=1, per_page=20, error_out=False).items
         response_body = []
         for post in posts:

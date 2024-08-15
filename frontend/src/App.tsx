@@ -3,8 +3,8 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 // import { uploadFile, FileStateProperties } from "./util/s3_helper";
 
 import { Navbar } from "./components/navbar"
-import { Home } from "./pages/Home"
-import { Posts } from "./pages/Posts";
+import Home from "./pages/Home"
+import Posts from "./pages/Posts";
 import { RegisterSignIn } from "./components/registerSignIn"
 
 import { URL } from "./constants"
@@ -50,7 +50,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/posts" element={<Posts />} />
-            {/* <Route path="/about" element={<About />} />
+          {/* <Route path="/about" element={<About />} />
             <Route path="/profile element={<Profile />} /> */}
         </Routes>
       </>
