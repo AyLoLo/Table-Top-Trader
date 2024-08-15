@@ -350,4 +350,4 @@ class ReviewsByUser(Resource):
 api.add_resource(ReviewsByUser, '/<string:username>/reviews/<int:id>')
 
 if __name__ == '__main__':
-    app.run(port=7000, debug=True)
+    app.run(port=5000, debug=True)
