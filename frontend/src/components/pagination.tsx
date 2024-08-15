@@ -1,29 +1,30 @@
 import React, { useState, useEffect} from "react";
+import { PostProp } from "interfaces/PostProp"
 
-const [currentPage, setCurrentPage] = useState(true)
-const [postsPerPage, setPostsPerPage] = useState(10)
 
-export const Pagination = (length : number, postsPerPage : number, handelePagination : any) => {
-    const paginationNumbers = [];
+export const Pagination = (props : {posts : PostProp[]}) => {
+    const [currentPage, setCurrentPage] = useState(1)
+    const [postsPerPage, setPostsPerPage] = useState(10)
+
+    const handlePagination = (pageNumber : number) => {
+    setCurrentPage(pageNumber);
+    };
+    const paginationNumber = [];
+    const length = props.posts.length
 
     for (let i = 1; i <= Math.ceil(length / postsPerPage); i++) {
-        paginationNumbers.push(i);
+        paginationNumber.push(i);
     }
-
-
-    const handlePagination = (pageNumber) => {
-    setCurrentPage (pageNumber);
-    };
-
-
-
-    // Implement a OnClick event for each page button. Call the handlePagiantion function with the appropriate page number
 
     return (
         <div>
-            {paginationNumbers.map((pageNumber) => (
-                <button key={pageNumber} className={currentPage === pageNumber ? 'active' : ''}>{pageNumber}</button>
-            ))}
+            {
+                paginationNumber.map((pageNumber) => (
+                    <button key={pageNumber} onClick={() => handlePagination(pageNumber)} className={currentPage === pageNumber ? 'active' : ''}>
+                        {pageNumber}
+                    </button>
+                ))
+            }
         </div>
     );
 };
