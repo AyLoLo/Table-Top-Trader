@@ -15,7 +15,7 @@ from dotenv import load_dotenv, dotenv_values
 from utils.s3_utils import upload_file_to_s3
 from sqlalchemy import select
 
-from models import db, User, Board_Game, Post, Review, Post_Image
+from models import db, User, Board_Game, Post, Review, Post_Image, Zipcode
 
 load_dotenv()
 config = dotenv_values()
@@ -296,7 +296,6 @@ class Reviews(Resource):
             response_body.append(review.to_dict())
         return make_response(jsonify(response_body), 200)
 
-
     def post(self):
         try:
             data = request.get_json()
@@ -359,6 +358,31 @@ class ReviewsByUser(Resource):
 
 
 api.add_resource(ReviewsByUser, '/<string:username>/reviews/<int:id>')
+
+class Zipcodes(Resource):
+    def get(self):
+        zipcode = request.args.get('code', None)
+        if zipcode is None:
+            return make_response(jsonify({"error": "Need zipcode query param"}), 422)
+        zipcode = Zipcode.query.filter_by(zipcode=zipcode).first()
+        response_body = zipcode.to_dict()
+        return make_response(jsonify(response_body), 200)
+    
+    @app.get("/predict")
+    def predict():
+        zipcode = request.args.get('code', None)
+        if zipcode is None:
+            return make_response(jsonify({"error": "Need zipcode query param"}), 422)
+        
+        search = "{}%".format(zipcode)
+        zipcodes = Zipcode.query.filter(Zipcode.zipcode.like(search)).limit(5).all()
+        response_body=[]
+        for code in zipcodes:
+            response_body.append(code.to_zip_only())
+        return make_response(jsonify(response_body), 200)
+
+
+api.add_resource(Zipcodes, '/zipcode')
 
 if __name__ == '__main__':
     app.run(port=7000, debug=True)

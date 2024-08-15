@@ -224,3 +224,6 @@ class Zipcode(db.Model, SerializerMixin):
             "longitutde": self.longitude,
             "latitude": self.latitude
         }
+    def to_zip_only(self):
+        return self.zipcode
+        
