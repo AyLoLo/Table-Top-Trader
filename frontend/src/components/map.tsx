@@ -14,7 +14,7 @@ export const Map = (props: any) => {
   const { onMarkerClick, posts } = props
 
   const [coords, setCoords] = useState({ longitude: 0, latitude: 0 })
-  const [zoomLevel, setZoomLevel] = useState(13);
+  const [zoomLevel, setZoomLevel] = useState(10);
   const [loading, setLoading] = useState(true)
   const [zipcodes, setZipcodes] = useState([])
 
@@ -43,13 +43,22 @@ export const Map = (props: any) => {
   }, [coords]);
 
   const onZipUpdate = (e: any) => {
+    if (e.key === 'Enter') {
+      console.log('do validate');
+      onSubmitZip(e);
+    }
     fetch(`${URL}predict?code=${e.target.value}`)
       .then(resp => resp.json())
       .then(resp => setZipcodes(resp))
       .catch(err => console.error(err));
   }
-  const onSubmitZip = (e) => {
+  const onSubmitZip = (e: any) => {
 
+    console.log("submitting zipcode", e.target.value)
+    fetch(`${URL}zipcode?code=${e.target.value}`)
+      .then(resp => resp.json())
+      .then(resp => setCoords({ longitude: resp.longitude, latitude: resp.latitude }))
+      .catch(err => console.error(err));
   }
 
   return (
