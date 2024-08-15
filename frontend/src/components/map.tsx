@@ -64,7 +64,7 @@ export const Map = (props: any) => {
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          {/* TODO: POST TYPE */}
+
           <MarkerClusterGroup
             chunkedLoading
             onClick={(e) => { console.log("hello world", e); }}
@@ -87,7 +87,9 @@ export const Map = (props: any) => {
                   eventHandlers={{ click: onMarkerClick }}
                 >
                   <Popup>
-                    {images?.length > 0 && <img src={`${S3_URL}${images[0].post_image_key}`} alt="board game post thumbnail" />}
+                    {images?.length > 0 &&
+                      <img src={`${S3_URL}${images[0].post_image_key}`} alt="board game post thumbnail" />
+                    }
 
                     <h2 className="font-bold text-lg">{title}</h2>
                     <p>{user.username}</p>
