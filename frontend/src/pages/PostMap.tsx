@@ -9,7 +9,6 @@ const PostMap = () => {
     fetch(`${URL}posts`)
       .then(response => response.json())
       .then(response => {
-        console.log(response)
         setPosts(response)
       }).catch(error => console.error(error));
   }, []);
@@ -19,12 +18,14 @@ const PostMap = () => {
   }
 
   return (
-    <div className="flex flex-wrap">
-      <Map
-        onMarkerClick={onMarkerClick}
-        posts={posts}
-      />
-      <div className=".w-3/12">laksdjfalsjdf</div>
+    <div>
+      <div className="flex flex-wrap">
+        <Map
+          onMarkerClick={onMarkerClick}
+          posts={posts}
+        />
+        <div className=".w-3/12">laksdjfalsjdf</div>
+      </div>
     </div>
   );
 };
