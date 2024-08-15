@@ -71,7 +71,14 @@ export const Map = (props: any) => {
           >
             {zoomLevel > 10 && posts.map((posts: any) => {
               const {
-                latitude, longitude, title, description, date_created, price, user, images,
+                latitude,
+                longitude,
+                title,
+                description,
+                date_created,
+                price,
+                user,
+                images,
               } = posts;
               const date = new Date(date_created).toLocaleString();
               return (
@@ -85,7 +92,9 @@ export const Map = (props: any) => {
                     <h2 className="font-bold text-lg">{title}</h2>
                     <p>{user.username}</p>
                     <p>${price}</p>
-                    <p>{description.length > 150 ? `${description.substring(0, 150)}...` : description}</p>
+                    <p>{description.length > 150
+                      ? `${description.substring(0, 150)}...`
+                      : description}</p>
                     <p>Posted on: {date}</p>
                   </Popup>
                 </Marker>
@@ -93,7 +102,8 @@ export const Map = (props: any) => {
               );
             })}
           </MarkerClusterGroup>
-        </MapContainer></>
+        </MapContainer>
+      </>
 
   )
 }
