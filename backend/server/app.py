@@ -365,8 +365,11 @@ class Zipcodes(Resource):
         if zipcode is None:
             return make_response(jsonify({"error": "Need zipcode query param"}), 422)
         zipcode = Zipcode.query.filter_by(zipcode=zipcode).first()
-        response_body = zipcode.to_dict()
-        return make_response(jsonify(response_body), 200)
+        if zipcode:
+            response_body = zipcode.to_dict()
+            return make_response(jsonify(response_body), 200)
+        else:
+            return make_response(jsonify({"error": "Zipcode doesn't exist"}), 400)
     
     @app.get("/predict")
     def predict():

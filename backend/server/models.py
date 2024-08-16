@@ -221,7 +221,7 @@ class Zipcode(db.Model, SerializerMixin):
     def to_dict(self):
         return {
             "zipcode": self.zipcode,
-            "longitutde": self.longitude,
+            "longitude": self.longitude,
             "latitude": self.latitude
         }
     def to_zip_only(self):

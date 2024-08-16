@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import L from "leaflet";
 import { Map } from "../components/map"
+import { MapSidebar } from "../components/mapSidebar";
 import { URL } from "../constants"
 const PostMap = () => {
   const [posts, setPosts] = useState([])
@@ -24,7 +25,7 @@ const PostMap = () => {
           onMarkerClick={onMarkerClick}
           posts={posts}
         />
-        <div className=".w-3/12">laksdjfalsjdf</div>
+        <MapSidebar />
       </div>
     </div>
   );
