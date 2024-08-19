@@ -27,7 +27,7 @@ export const Post = (props : any) => {
             </div>
             <div>
                 <span>{post.description}</span>
-                <Carousel/>
+                <Carousel images={post.images}/>
             </div>
         </div> 
     );
