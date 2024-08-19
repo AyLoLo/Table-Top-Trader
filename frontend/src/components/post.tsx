@@ -1,20 +1,34 @@
 import React from "react";
+import TTTUser from "../assets/TTTUser.png"
+import {Carousel} from "./carousel"
 
-export const Post = (post: any, loading: boolean) => {
-    if (loading) {
-        return <h1>Loading...</h1>;
-    }
+export const Post = (props : any) => {
     
+    const {
+        post,
+        loading
+    } = props;
+    
+    if (loading) {
+         return <h1>Loading...</h1>;
+    }
+
+    console.log(post.images.length)
+
     return (
-        <div className="text-white border-red-900 md:border 4 grid grid-rows-3 pl-5 pt-5 relative">
-            <h1 className="text-green-600 grid grid-rows-2">
-                <span>{post.title}</span>
-                <span>{post.price}</span>
-                <span>{post.date_created}</span>
-            </h1>
-            <span>
-                {post.description}
-            </span>
-        </div>
+        <div className="px-16">
+            <div className="flex items-start">
+                <img className="w-10 h-10"src={TTTUser}/> 
+                <span className="pt-4 pl-4">Posted by <span className="font-bold">{post.user.username}</span></span>
+            </div>
+            <div className="grid grid-cols-2">
+                <span>{post.title}</span> 
+                <span className="col-end-13">${post.price}</span>
+            </div>
+            <div>
+                <span>{post.description}</span>
+                <Carousel/>
+            </div>
+        </div> 
     );
 }
