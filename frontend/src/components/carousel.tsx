@@ -1,9 +1,13 @@
 import React, {useState} from "react"
 
-export const Carousel = () => {
+export const Carousel = (props : any) => {
+
+    const {
+        images 
+    } = props
     
     const [index, setIndex] = useState(0);
-    const length = post.images.length
+    const length = images.length
     const handlePrevious = () => {
         const newIndex = index - 1;
         setIndex(newIndex < 0 ? length - 1 : newIndex);
