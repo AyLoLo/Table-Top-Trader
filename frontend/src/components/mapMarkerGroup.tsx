@@ -10,13 +10,13 @@ export const MapMarkerGroup = (props: {
   posts: any,
   onMarkerClick: LeafletMouseEventHandlerFn,
   coords: any,
-  loadPostSidebar: MouseEventHandler<HTMLAnchorElement>
+  setPost: MouseEventHandler<HTMLAnchorElement>
 }) => {
   const {
     posts,
     onMarkerClick,
     coords,
-    loadPostSidebar
+    setPost
   } = props
 
   const map = useMap();
@@ -30,7 +30,7 @@ export const MapMarkerGroup = (props: {
       chunkedLoading
       onClick={(e) => { console.log("hello world", e); }}
     >
-      {posts.map((posts: any) => {
+      {posts.map((post: any) => {
         const {
           latitude,
           longitude,
@@ -40,7 +40,7 @@ export const MapMarkerGroup = (props: {
           price,
           user,
           images,
-        } = posts;
+        } = post;
         const date = new Date(date_created).toLocaleString();
         return (
           <Marker
@@ -52,7 +52,7 @@ export const MapMarkerGroup = (props: {
               {images?.length > 0 &&
                 <img src={`${S3_URL}${images[0].post_image_key}`} alt="board game post thumbnail" />
               }
-              <a href="#post" onClick={loadPostSidebar} className="font-bold text-lg">
+              <a href="#post" onClick={() => setPost(post)} className="font-bold text-lg">
                 {title}
               </a>
               <p>

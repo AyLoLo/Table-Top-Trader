@@ -5,6 +5,7 @@ import { MapSidebar } from "../components/mapSidebar";
 import { URL } from "../constants"
 const PostMap = () => {
   const [posts, setPosts] = useState([])
+  const [post, setPost] = useState(null)
 
   useEffect(() => {
     fetch(`${URL}posts`)
@@ -20,12 +21,14 @@ const PostMap = () => {
 
   return (
     <div>
-      <div className="flex flex-wrap">
+      <div className="">
         <Map
           onMarkerClick={onMarkerClick}
           posts={posts}
+          post={post}
+          setPost={setPost}
         />
-        <MapSidebar />
+        <MapSidebar posts={posts} post={post} />
       </div>
     </div>
   );

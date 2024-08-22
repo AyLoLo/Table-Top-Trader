@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import { Routes, Route, useLocation } from 'react-router-dom';
-// import { uploadFile, FileStateProperties } from "./util/s3_helper";
+import { uploadFile, FileStateProperties } from "./utils/s3_helper";
 
 import { Navbar } from "./components/navbar"
 import Home from "./pages/Home"
@@ -8,15 +8,19 @@ import { URL } from "./constants"
 import PostMap from "./pages/PostMap"
 import { RegisterSignIn } from "./components/registerSignIn"
 
+
 const App = () => {
   let location = useLocation();
   const [loggedInUser, setLoggedInUser] = useState<boolean>(false);
   const [registerSigninModal, setRegisterSigninModal] = useState<boolean>(false);
-  // const [file, setFile] = useState<FileStateProperties>();
-  // const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   let files = (e.target as HTMLInputElement).files;
-  //   files && files[0] && setFile(files[0]);
-  // };
+
+  const [file, setFile] = useState<FileStateProperties>();
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    let files = (e.target as HTMLInputElement).files;
+    files && files[0] && setFile(files[0]);
+  };
+
+
   useEffect(() => {
     fetch(`${URL}session-status`)
       .then(response => response.json())
@@ -55,10 +59,10 @@ const App = () => {
             <Route path="/profile element={<Profile />} /> */}
         </Routes>
       </>
-      {/* <div>
+      <div>
         <input type="file" onChange={handleFileChange} />
         <button onClick={() => uploadFile(file!)}>Upload</button>
-      </div> */}
+      </div>
     </div>
   );
 }

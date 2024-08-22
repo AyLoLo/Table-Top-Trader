@@ -11,7 +11,7 @@ import 'leaflet/dist/leaflet.css';
 import { MapMarkerGroup } from "./mapMarkerGroup";
 
 export const Map = (props: any) => {
-  const { onMarkerClick, posts } = props
+  const { onMarkerClick, posts, post, setPost } = props
   const [coords, setCoords] = useState({ longitude: 0, latitude: 0 })
   const [zoomLevel, setZoomLevel] = useState(10);
   const [loading, setLoading] = useState(true)
@@ -32,7 +32,7 @@ export const Map = (props: any) => {
           latitude: position.coords.latitude,
         });
       },
-      err => console.log(err)
+      err => { setLoading(false); console.log(err); }
     );
   }, []);
 
@@ -49,12 +49,9 @@ export const Map = (props: any) => {
       .catch(err => console.error(err));
   }
 
-  const loadPostSidebar = (e: any) => {
-
-  }
-
   const onSubmitZip = (e: any) => {
-    console.log("submitting zipcode", e.target.value)
+    console.log("submitting zipcode", e.target.value);
+
     fetch(`${URL}zipcode?code=${e.target.value}`)
       .then(resp => {
         if (!resp.ok) {
@@ -89,8 +86,9 @@ export const Map = (props: any) => {
             />
           )}
         </datalist>
+
         <MapContainer
-          className="h-screen w-9/12 z-10 relative"
+          className={`h-screen z-10 relative`}
           center={[coords.latitude, coords.longitude]}
           zoom={zoomLevel}
           scrollWheelZoom={false}
@@ -103,11 +101,10 @@ export const Map = (props: any) => {
             posts={posts}
             onMarkerClick={onMarkerClick}
             coords={coords}
-            loadPostSidebar={loadPostSidebar}
+            setPost={setPost}
           />
 
         </MapContainer>
       </>
-
   )
 }
