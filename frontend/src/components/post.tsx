@@ -13,20 +13,21 @@ export const Post = (props : any) => {
          return <h1>Loading...</h1>;
     }
 
-    console.log(post.images.length)
-
     return (
-        <div className="px-16">
+        <div className="bg-white m-auto w-2/5 px-16 pt-5 pb-2 border-4 border-red-700">
             <div className="flex items-start">
                 <img className="w-10 h-10"src={TTTUser}/> 
-                <span className="pt-4 pl-4">Posted by <span className="font-bold">{post.user.username}</span></span>
+                <span className="mt-4 ml-4">Posted by <span className="font-bold text-blue-700">{post.user.username}</span></span>
             </div>
             <div className="grid grid-cols-2">
-                <span>{post.title}</span> 
-                <span className="col-end-13">${post.price}</span>
+                <span className="font-bold ">{post.title}</span> 
+                <span className="col-end-13 font-bold">${post.price}</span>
             </div>
-            <div>
+            <div className="my-4">
                 <span>{post.description}</span>
+            </div>
+            <div className="">
+                <img src={post.images}/>
                 <Carousel images={post.images}/>
             </div>
         </div> 
