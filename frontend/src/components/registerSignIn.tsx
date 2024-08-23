@@ -126,7 +126,6 @@ export const RegisterSignIn = (props: any) => {
       }),
       headers: myHeaders,
     }).then(response => response.json()).then(response => {
-      console.log(response);
       if (!response.error) {
         hideModal();
         return response;
@@ -149,7 +148,6 @@ export const RegisterSignIn = (props: any) => {
       }),
       headers: myHeaders,
     }).then(response => response.json()).then(response => {
-      console.log(response);
       if (!response.error) {
         hideModal();
         return response;

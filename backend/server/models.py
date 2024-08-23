@@ -21,7 +21,6 @@ board_game_posts = db.Table('board_game_posts',
                             db.Column('post_id', db.ForeignKey('posts.post_id'), primary_key=True)
 )
 
-
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
@@ -134,7 +133,7 @@ class Post(db.Model, SerializerMixin):
         return {
             "id": self.post_id,
             "title": self.title,
-            "user": self.user.to_dict(),
+            "user": self.user.to_dict(), 
             "description": self.description,
             "longitude": self.longitude,
             "latitude": self.latitude,
