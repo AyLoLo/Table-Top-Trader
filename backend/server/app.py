@@ -164,7 +164,7 @@ class Posts(Resource):
         page = request.args.get('page', 1)
         # TODO: check to see if select is correct
         post_query = select(Post).order_by(Post.date_created.desc()).join(Post.images)
-        posts = db.paginate(post_query, page=int(page), per_page=20, error_out=False).items
+        posts = db.paginate(post_query, page=int(page), per_page=2, error_out=False).items
 
         response_body = []
         for post in posts:
