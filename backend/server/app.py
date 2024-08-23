@@ -167,7 +167,7 @@ class Posts(Resource):
         
         per_page = 5
 
-        query = select(Post).order_by(Post.date_created.desc()).join(Post.images)
+        query = select(Post).order_by(Post.date_created.desc())
         paginated_posts = db.paginate(query, page=int(page), per_page=per_page, error_out=False)
 
         response_body = {}
