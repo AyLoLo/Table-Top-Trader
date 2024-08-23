@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import L from "leaflet";
 import { Map } from "../components/map"
-import { MapSidebar } from "../components/mapSidebar";
+import { MapSidePanel } from "../components/mapSidePanel";
 import { URL } from "../constants"
 const PostMap = () => {
   const [posts, setPosts] = useState([])
   const [post, setPost] = useState(null)
+  const [hideSidePanel, setHideSidePanel] = useState(true)
+  const [isPendingOpen, startOpenPanelTransition] = useTransition();
+  const [isPendingClose, startClosePanelTransition] = useTransition();
 
   useEffect(() => {
     fetch(`${URL}posts`)
@@ -18,6 +21,11 @@ const PostMap = () => {
   const onMarkerClick: L.LeafletMouseEventHandlerFn = (e: L.LeafletMouseEvent) => {
     console.log("marker is clicked", e);
   }
+  const setHideSidePanelAnimated = () => {
+    startOpenPanelTransition(() => {
+      
+    })
+  }
 
   return (
     <div>
@@ -27,8 +35,16 @@ const PostMap = () => {
           posts={posts}
           post={post}
           setPost={setPost}
+          setHideSidePanel={setHideSidePanel}
         />
-        <MapSidebar posts={posts} post={post} />
+        <MapSidePanel
+          post={post}
+          setHideSidePanel={setHideSidePanel}
+          hideSidePanel={hideSidePanel}
+          startClosePanelTransition={startClosePanelTransition}
+          isPendingClose={isPendingClose}
+          isPendingOpen={isPendingOpen}
+        />
       </div>
     </div>
   );

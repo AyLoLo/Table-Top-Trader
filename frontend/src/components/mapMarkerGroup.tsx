@@ -11,12 +11,14 @@ export const MapMarkerGroup = (props: {
   onMarkerClick: LeafletMouseEventHandlerFn,
   coords: any,
   setPost: MouseEventHandler<HTMLAnchorElement>
+  setHideSidePanel: Function
 }) => {
   const {
     posts,
     onMarkerClick,
     coords,
-    setPost
+    setPost,
+    setHideSidePanel
   } = props
 
   const map = useMap();
@@ -52,7 +54,10 @@ export const MapMarkerGroup = (props: {
               {images?.length > 0 &&
                 <img src={`${S3_URL}${images[0].post_image_key}`} alt="board game post thumbnail" />
               }
-              <a href="#post" onClick={() => setPost(post)} className="font-bold text-lg">
+              <a href="#post" onClick={() => {
+                setPost(post);
+                setHideSidePanel(false);
+              }} className="font-bold text-lg">
                 {title}
               </a>
               <p>

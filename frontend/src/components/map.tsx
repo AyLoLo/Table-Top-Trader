@@ -11,7 +11,7 @@ import 'leaflet/dist/leaflet.css';
 import { MapMarkerGroup } from "./mapMarkerGroup";
 
 export const Map = (props: any) => {
-  const { onMarkerClick, posts, post, setPost } = props
+  const { onMarkerClick, posts, post, setPost, setHideSidePanel } = props
   const [coords, setCoords] = useState({ longitude: 0, latitude: 0 })
   const [zoomLevel, setZoomLevel] = useState(10);
   const [loading, setLoading] = useState(true)
@@ -102,6 +102,7 @@ export const Map = (props: any) => {
             onMarkerClick={onMarkerClick}
             coords={coords}
             setPost={setPost}
+            setHideSidePanel={setHideSidePanel}
           />
 
         </MapContainer>
