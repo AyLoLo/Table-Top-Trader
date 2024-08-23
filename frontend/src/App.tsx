@@ -3,8 +3,8 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 // import { uploadFile, FileStateProperties } from "./util/s3_helper";
 
 import { Navbar } from "./components/navbar"
-import Home from "./pages/Home"
-import Posts from "./pages/Posts";
+import { Home } from "./pages/Home"
+import Posts from "./pages/Posts"
 import { RegisterSignIn } from "./components/registerSignIn"
 
 import { URL } from "./constants"
@@ -13,7 +13,7 @@ const App = () => {
   let location = useLocation();
   const [loggedInUser, setLoggedInUser] = useState<boolean>(false);
   const [registerSigninModal, setRegisterSigninModal] = useState<boolean>(false);
-  // const [file, setFile] = useState<FileStateProperties>();
+  // const [file, <setF></setF>ile] = useState<FileStateProperties>();
   // const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
   //   let files = (e.target as HTMLInputElement).files;
   //   files && files[0] && setFile(files[0]);
