@@ -7,7 +7,9 @@ export const Carousel = (props : any) => {
     } = props
     
     const [index, setIndex] = useState(0);
+    const [hideCarousel, setHideCarousel] = useState<boolean>(false)
     const length = images.length
+    
     const handlePrevious = () => {
         const newIndex = index - 1;
         setIndex(newIndex < 0 ? length - 1 : newIndex);
@@ -18,11 +20,20 @@ export const Carousel = (props : any) => {
         setIndex(newIndex >= length ? 0 : newIndex)
     };
 
+    if (length === 1)  {
+        setHideCarousel(true)
+    }
+
     return (
         <div>
-            <button onClick={handlePrevious}>Previous</button>
-            <button onClick={handleNext}>Next</button>
-            <span>{index}</span>
+            {!hideCarousel 
+                ?   <div className="grid grid-flow-col">
+                        <button className="text-right text-blue-700 font-semibold" onClick={handlePrevious}>Previous</button>
+                        <span className="m-auto text-blue-700">{index}</span>
+                        <button className="text-left text-blue-700 font-semibold" onClick={handleNext}>Next</button>
+                    </div>
+                : null
+            }
         </div>
     );
 };
