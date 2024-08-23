@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
-import {Post} from "components/post";
-import {Pagination} from "components/pagination";
+import { Post } from "components/post";
+import { Pagination } from "components/pagination";
 import { URL } from "../constants";
 
 
@@ -44,8 +44,13 @@ const Posts = () => {
           <Post post={post} key={post.id} />
         )}
       </div>
-      <div className="border-4 border-blue-700 flex justify-center w-16 m-auto mt-5 bg-white">
-          <Pagination length={posts.length} pageCount={pageCount} currentPage={currentPage} handlePagination={handlePagination}/>
+      <div className="border-4 border-blue-700 m-auto bg-white">
+          <Pagination 
+            length={posts.length} 
+            pageCount={pageCount} 
+            currentPage={currentPage} 
+            handlePagination={handlePagination}
+          />
       </div>
     </div>
   );
