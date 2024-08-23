@@ -1,3 +1,4 @@
+import math
 import ipdb
 import os
 import boto3
@@ -159,16 +160,26 @@ api.add_resource(Board_Games, "/board-games")
 
 
 class Posts(Resource):
-
     def get(self):
         page = request.args.get('page', 1)
-        # TODO: check to see if select is correct
-        post_query = select(Post).order_by(Post.date_created.desc()).join(Post.images)
-        posts = db.paginate(post_query, page=int(page), per_page=20, error_out=False).items
+        if not page.isnumeric():
+            return make_response(jsonify({"error": "Invalid page"}, 400))
+        
+        per_page = 5
 
-        response_body = []
-        for post in posts:
-            response_body.append(post.to_dict())
+        query = select(Post).order_by(Post.date_created.desc()).join(Post.images)
+        paginated_posts = db.paginate(query, page=int(page), per_page=per_page, error_out=False)
+
+        response_body = {}
+        posts = []
+        for post in paginated_posts.items:
+            posts.append(post.to_dict())
+
+        response_body["posts"] = posts
+        response_body["page"] = page
+        response_body["total_posts"] = paginated_posts.total
+        response_body["total_pages"] = math.ceil(paginated_posts.total / per_page)
+
         return make_response(jsonify(response_body), 200)
     
     @app.post("/post")
