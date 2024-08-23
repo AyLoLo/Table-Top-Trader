@@ -32,9 +32,9 @@ export const Navbar = (props: any) => {
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
 
         {/* Logo */}
-        <div className="grid grid-cols-5">
+        <div className="grid grid-flow-col gap-2">
           <img className="h-12 w-12" src={TTTLogo} alt="Let's Roll" />
-          <h1 className="text-3xl font-bold text-red-600 col-span-4 col-start-2">Table Top Trader</h1>
+          <h1 className="text-3xl font-bold text-red-600">Table Top Trader</h1>
         </div>
         {/* Desktop Navigation */}
         <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0  dark:border-gray-700">
