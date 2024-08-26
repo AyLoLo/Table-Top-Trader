@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Map } from "../components/map"
-import { MapSidePanel } from "../components/mapSidePanel";
+import { PostsMap } from "../components/postsMap"
+import { MapSidePanel } from "../components/postsMap/mapSidePanel";
 import { URL } from "../constants"
 const PostMap = () => {
   const [mapCoords, setMapCoords] = useState({
     longitude: 0,
     latitude: 0
   });
-  const [draggedCoords, setDraggedCoords] = useState([])
   const [loading, setLoading] = useState(true)
   const [posts, setPosts] = useState([])
   const [post, setPost] = useState(null)
@@ -35,17 +34,16 @@ const PostMap = () => {
 
   return (
     <div>
-      <Map
+      <PostsMap
         posts={posts}
         post={post}
-        draggedCoords={draggedCoords}
-        setDraggedCoords={setDraggedCoords}
         mapCoords={mapCoords}
         setMapCoords={setMapCoords}
         setPost={setPost}
         loading={loading}
         setLoading={setLoading}
         setPanelAnimation={setPanelAnimation}
+        getNearbyPosts={getNearbyPosts}
       />
       <MapSidePanel
         post={post}

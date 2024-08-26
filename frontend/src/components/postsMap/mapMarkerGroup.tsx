@@ -1,28 +1,21 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { MouseEventHandler, useEffect } from "react"
+import React, { MouseEventHandler } from "react"
 import MarkerClusterGroup from 'react-leaflet-cluster'
-import { Marker, Popup, useMap } from 'react-leaflet'
-import { S3_URL } from "../constants"
+import { Marker, Popup } from 'react-leaflet'
+import { S3_URL } from "../../constants"
 
 
 export const MapMarkerGroup = (props: {
   posts: any,
   mapCoords: any,
   setPost: MouseEventHandler<HTMLAnchorElement>
-  setPanelAnimation: Function
+  setPanelAnimation: Function,
+  zoomLevel: number
 }) => {
   const {
     posts,
-    mapCoords,
     setPost,
-    setPanelAnimation
+    setPanelAnimation,
   } = props
-
-  const map = useMap();
-
-  useEffect(() => {
-    map.flyTo([mapCoords.latitude, mapCoords.longitude], 15)
-  }, [map, mapCoords]);
 
   return (
     <MarkerClusterGroup
