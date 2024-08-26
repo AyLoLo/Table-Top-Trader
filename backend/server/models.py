@@ -208,3 +208,22 @@ class Review(db.Model, SerializerMixin):
             "comment": self.comment,
             "date_created": self.date_created.isoformat()
         }
+
+class Zipcode(db.Model, SerializerMixin):
+    __tablename__ = "zipcodes"
+    zipcode = db.Column(db.String, primary_key=True)
+    longitude = db.Column(db.Numeric, nullable=False)
+    latitude = db.Column(db.Numeric, nullable=False)
+
+    def __repr__(self):
+        return f'<Zipcode id="{self.zipcode}">'
+    
+    def to_dict(self):
+        return {
+            "zipcode": self.zipcode,
+            "longitude": self.longitude,
+            "latitude": self.latitude
+        }
+    def to_zip_only(self):
+        return self.zipcode
+        

@@ -11,3 +11,4 @@ backend/server/instance/
 backend/server/migrations/
 
 frontend/src/.DS_Store
+frontend/build

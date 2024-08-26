@@ -11,6 +11,7 @@ export const LAST_NAME_MIN_LEN = 2;
 export const USERNAME_MIN_LEN = 5;
 
 export const URL = "http://127.0.0.1:5000/"
+export const S3_URL = "https://table-top-trader-dev.s3.us-east-2.amazonaws.com/"
 
 export const FORM_INPUTS = [
   {
