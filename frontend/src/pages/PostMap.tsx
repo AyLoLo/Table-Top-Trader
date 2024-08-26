@@ -1,51 +1,57 @@
-import React, { useEffect, useState, useTransition } from "react";
-import L from "leaflet";
+import React, { useEffect, useState } from "react";
 import { Map } from "../components/map"
 import { MapSidePanel } from "../components/mapSidePanel";
 import { URL } from "../constants"
 const PostMap = () => {
+  const [mapCoords, setMapCoords] = useState({
+    longitude: 0,
+    latitude: 0
+  });
+  const [draggedCoords, setDraggedCoords] = useState([])
+  const [loading, setLoading] = useState(true)
   const [posts, setPosts] = useState([])
   const [post, setPost] = useState(null)
-  const [hideSidePanel, setHideSidePanel] = useState(true)
-  const [isPendingOpen, startOpenPanelTransition] = useTransition();
-  const [isPendingClose, startClosePanelTransition] = useTransition();
+  const [panelAnimation, setPanelAnimation] = useState({ hide: false, show: false })
 
-  useEffect(() => {
-    fetch(`${URL}posts`)
+  const getNearbyPosts = (long: number, lat: number) => {
+    fetch(`${URL}get-by-loc?lon=${long}&lat=${lat}`)
       .then(response => response.json())
       .then(response => {
         setPosts(response)
       }).catch(error => console.error(error));
+  }
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        setMapCoords({
+          longitude: position.coords.longitude,
+          latitude: position.coords.latitude,
+        });
+        getNearbyPosts(position.coords.longitude, position.coords.latitude)
+      },
+      err => { setLoading(false); console.log(err); }
+    );
   }, []);
-
-  const onMarkerClick: L.LeafletMouseEventHandlerFn = (e: L.LeafletMouseEvent) => {
-    console.log("marker is clicked", e);
-  }
-  const setHideSidePanelAnimated = () => {
-    startOpenPanelTransition(() => {
-      
-    })
-  }
 
   return (
     <div>
-      <div className="">
-        <Map
-          onMarkerClick={onMarkerClick}
-          posts={posts}
-          post={post}
-          setPost={setPost}
-          setHideSidePanel={setHideSidePanel}
-        />
-        <MapSidePanel
-          post={post}
-          setHideSidePanel={setHideSidePanel}
-          hideSidePanel={hideSidePanel}
-          startClosePanelTransition={startClosePanelTransition}
-          isPendingClose={isPendingClose}
-          isPendingOpen={isPendingOpen}
-        />
-      </div>
+      <Map
+        posts={posts}
+        post={post}
+        draggedCoords={draggedCoords}
+        setDraggedCoords={setDraggedCoords}
+        mapCoords={mapCoords}
+        setMapCoords={setMapCoords}
+        setPost={setPost}
+        loading={loading}
+        setLoading={setLoading}
+        setPanelAnimation={setPanelAnimation}
+      />
+      <MapSidePanel
+        post={post}
+        setPanelAnimation={setPanelAnimation}
+        panelAnimation={panelAnimation}
+      />
     </div>
   );
 };

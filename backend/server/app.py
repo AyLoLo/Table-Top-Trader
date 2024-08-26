@@ -2,7 +2,7 @@ import math
 import ipdb
 import os
 import boto3
-
+from pprint import pprint 
 from functools import wraps
 
 from flask import Flask, make_response, jsonify, request, session, redirect
@@ -13,7 +13,7 @@ from flask_restful import Api, Resource
 from flask_cors import CORS
 from dotenv import load_dotenv, dotenv_values
 from utils.s3_utils import upload_file_to_s3
-from sqlalchemy import select
+from sqlalchemy import func, select
 
 from models import db, User, Board_Game, Post, Review, Post_Image, Zipcode
 
@@ -160,6 +160,32 @@ api.add_resource(Board_Games, "/board-games")
 
 
 class Posts(Resource):
+    @app.get("/get-by-loc")
+    def get_by_loc():
+
+        try:
+            lon = float(request.args.get('lon', -70))
+            lat = float(request.args.get('lat', 40))
+            pprint(lon)
+            pprint(lat)
+            posts = Post.query.filter(
+                (func.degrees(
+                    func.acos(
+                        func.sin(func.radians(lat)) * func.sin(func.radians(Post.latitude)) + 
+                        func.cos(func.radians(lat)) * func.cos(func.radians(Post.latitude)) * 
+                        func.cos(func.radians(lon - Post.longitude))
+                    )
+                ) * 60 * 1.1515 * 1.609344) <= 100).all()
+
+            pprint("======")
+            pprint(posts)
+            resp = []
+            for post in posts:
+                resp.append(post.to_dict())
+            return make_response(jsonify(resp), 200)
+        except Exception as e:
+            pprint(e)
+            return make_response(jsonify({"error": "Invalid input"}),400)
     def get(self):
         page = request.args.get('page', 1)
         if not page.isnumeric():
@@ -167,7 +193,7 @@ class Posts(Resource):
         
         per_page = 5
 
-        query = select(Post).order_by(Post.date_created.desc()).join(Post.images)
+        query = select(Post).order_by(Post.date_created.desc())
         paginated_posts = db.paginate(query, page=int(page), per_page=per_page, error_out=False)
 
         response_body = {}

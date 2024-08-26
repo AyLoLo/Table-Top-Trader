@@ -1,38 +1,34 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { MouseEventHandler, useEffect } from "react"
-import { LeafletMouseEventHandlerFn } from "leaflet"
 import MarkerClusterGroup from 'react-leaflet-cluster'
 import { Marker, Popup, useMap } from 'react-leaflet'
-import { S3_URL, URL } from "../constants"
+import { S3_URL } from "../constants"
 
 
 export const MapMarkerGroup = (props: {
   posts: any,
-  onMarkerClick: LeafletMouseEventHandlerFn,
-  coords: any,
+  mapCoords: any,
   setPost: MouseEventHandler<HTMLAnchorElement>
-  setHideSidePanel: Function
+  setPanelAnimation: Function
 }) => {
   const {
     posts,
-    onMarkerClick,
-    coords,
+    mapCoords,
     setPost,
-    setHideSidePanel
+    setPanelAnimation
   } = props
 
   const map = useMap();
 
   useEffect(() => {
-    map.flyTo([coords.latitude, coords.longitude], 15)
-  }, [map, coords]);
+    map.flyTo([mapCoords.latitude, mapCoords.longitude], 15)
+  }, [map, mapCoords]);
 
   return (
     <MarkerClusterGroup
       chunkedLoading
-      onClick={(e) => { console.log("hello world", e); }}
     >
-      {posts.map((post: any) => {
+      {posts && posts.map((post: any) => {
         const {
           latitude,
           longitude,
@@ -48,7 +44,6 @@ export const MapMarkerGroup = (props: {
           <Marker
             key={date_created + title + latitude + longitude}
             position={[latitude, longitude]}
-            eventHandlers={{ click: onMarkerClick }}
           >
             <Popup>
               {images?.length > 0 &&
@@ -56,7 +51,7 @@ export const MapMarkerGroup = (props: {
               }
               <a href="#post" onClick={() => {
                 setPost(post);
-                setHideSidePanel(false);
+                setPanelAnimation({ hide: false, show: true });
               }} className="font-bold text-lg">
                 {title}
               </a>

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react"
 import L from "leaflet";
-
 import { MapContainer, TileLayer } from 'react-leaflet'
-import { S3_URL, URL } from "../constants"
+import { MapCenter } from "../utils/mapCenter"
+import { URL } from "../constants"
 
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
@@ -11,10 +11,22 @@ import 'leaflet/dist/leaflet.css';
 import { MapMarkerGroup } from "./mapMarkerGroup";
 
 export const Map = (props: any) => {
-  const { onMarkerClick, posts, post, setPost, setHideSidePanel } = props
-  const [coords, setCoords] = useState({ longitude: 0, latitude: 0 })
-  const [zoomLevel, setZoomLevel] = useState(10);
-  const [loading, setLoading] = useState(true)
+
+  const {
+    posts,
+    setPost,
+    setPanelAnimation,
+    mapCoords,
+    setMapCoords,
+    loading,
+    setLoading,
+    styles,
+    setDraggedCoords,
+    draggedCoords
+  } = props
+
+  const zoomLevel = 10;
+
   const [zipcodes, setZipcodes] = useState([])
 
   let DefaultIcon = L.icon({
@@ -25,21 +37,9 @@ export const Map = (props: any) => {
   L.Marker.prototype.options.icon = DefaultIcon;
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        setCoords({
-          longitude: position.coords.longitude,
-          latitude: position.coords.latitude,
-        });
-      },
-      err => { setLoading(false); console.log(err); }
-    );
-  }, []);
-
-  useEffect(() => {
-    if (coords.longitude !== 0)
+    if (mapCoords.longitude !== 0)
       setLoading(false);
-  }, [coords]);
+  }, [mapCoords, setLoading]);
 
 
   const onZipUpdate = (e: any) => {
@@ -50,8 +50,6 @@ export const Map = (props: any) => {
   }
 
   const onSubmitZip = (e: any) => {
-    console.log("submitting zipcode", e.target.value);
-
     fetch(`${URL}zipcode?code=${e.target.value}`)
       .then(resp => {
         if (!resp.ok) {
@@ -61,7 +59,10 @@ export const Map = (props: any) => {
       })
       .then(resp => {
         if (resp)
-          setCoords({ longitude: resp.longitude, latitude: resp.latitude })
+          setMapCoords({
+            longitude: resp.longitude,
+            latitude: resp.latitude
+          });
       })
       .catch(err => console.error(err));
   }
@@ -88,8 +89,8 @@ export const Map = (props: any) => {
         </datalist>
 
         <MapContainer
-          className={`h-screen z-10 relative`}
-          center={[coords.latitude, coords.longitude]}
+          className={`h-screen z-10 relative ${styles}`}
+          center={[mapCoords.latitude, mapCoords.longitude]}
           zoom={zoomLevel}
           scrollWheelZoom={false}
         >
@@ -97,15 +98,15 @@ export const Map = (props: any) => {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
+          <MapCenter setMapCoords={setMapCoords} setDraggedCoords={setDraggedCoords} />
           <MapMarkerGroup
             posts={posts}
-            onMarkerClick={onMarkerClick}
-            coords={coords}
+            mapCoords={mapCoords}
             setPost={setPost}
-            setHideSidePanel={setHideSidePanel}
+            setPanelAnimation={setPanelAnimation}
           />
 
-        </MapContainer>
+        </MapContainer >
       </>
   )
 }

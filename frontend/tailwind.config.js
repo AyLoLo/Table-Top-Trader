@@ -8,23 +8,21 @@ module.exports = {
         "hero-background": "url('/src/assets/TTTHero.jpg')",
       },
       animation: {
-        "slide-close": "slide-close 2.5s linear",
-        "slide-open": "slide-close 2.5s linear",
+        "slide-close": "slide-close 0.75s linear",
+        "slide-open": "slide-open 0.75s linear",
       },
       keyframes: {
-        "slide-close": {
-          "0%": { transform: "translateX(-100%)", opacity: 0.1 },
-          "15%": { transform: "translateX(-100%)", opacity: 1 },
-          "30%": { transform: "translateX(0)", opacity: 1 },
-          "45%": { transform: "translateX(0)", opacity: 1 },
-          "100%": { transform: "translateX(100%)", opacity: 0.1 },
-        },
         "slide-open": {
-          "0%": { transform: "translateX(100%)", opacity: 0.1 },
-          "15%": { transform: "translateX(0)", opacity: 1 },
-          "30%": { transform: "translateX(0)", opacity: 1 },
-          "45%": { transform: "translateX(-100%)", opacity: 1 },
-          "100%": { transform: "translateX(-100%)", opacity: 0.1 },
+          "0%": {
+            right: "-250%",
+          },
+          "100%": {
+            right: "0",
+          },
+        },
+        "slide-close": {
+          "0%": { right: "0px" },
+          "100%": { right: "-250%" },
         },
       },
     },

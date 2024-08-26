@@ -32,7 +32,7 @@ const App = () => {
   }, []);
 
   return (
-    <div className="App">
+    <div className="App overflow-x-hidden relative">
       <Navbar
         registerSigninModal={registerSigninModal}
         setRegisterSigninModal={setRegisterSigninModal}

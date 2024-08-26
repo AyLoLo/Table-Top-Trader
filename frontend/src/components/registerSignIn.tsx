@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent, ReactElement } from "react"
+import React, { useState, ChangeEvent, ReactElement } from "react"
 import {
   FORM_INPUTS,
   URL,
@@ -6,8 +6,6 @@ import {
 import { Input } from "./input"
 import { FormProvider, useForm } from "react-hook-form";
 import { bool } from "aws-sdk/clients/signer";
-// import { AiOutlineConsoleSql } from "react-icons/ai";
-// import { InputProp } from "interfaces/InputProp";
 
 export const Form = (props: {
   showSignIn: bool;
