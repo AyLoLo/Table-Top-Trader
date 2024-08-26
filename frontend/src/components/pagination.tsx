@@ -1,13 +1,13 @@
 import React, { useState, useEffect} from "react";
-import { PostProp } from "interfaces/PostProp"
-
 
 export const Pagination = (props : any) => {
 
     const {
         length,
+        pageCount,
+        setCurrentPage,
         currentPage,
-        pageCount
+        handlePagination
     } = props;
     
     let paginationNumber = []
@@ -15,7 +15,7 @@ export const Pagination = (props : any) => {
     let lastPage = pageCount
 
     if (lastPage <= 1) {
-        return [];
+        return null;
     }
 
     paginationNumber = [
@@ -33,26 +33,26 @@ export const Pagination = (props : any) => {
         ...(paginationNumber.length > 0 && paginationNumber[0] > 2 ? ["..."] : []),
         ...paginationNumber,
         ...(paginationNumber.length > 0 && paginationNumber[size - 1] + 1 < lastPage ? ["..."] : []),
-        ...(paginationNumber.length > 0 && paginationNumber[size - 1] < lastPage ? ["lastPage"] : [])
+        ...(paginationNumber.length > 0 && paginationNumber[size - 1] < lastPage ? [lastPage] : [])
     ];
 
     const onNext = () => {
-        currentPage(currentPage + 1)
+        setCurrentPage(currentPage + 1)
     };
 
     const onPrevious = () => {
-        currentPage(currentPage - 1)
+        setCurrentPage(currentPage - 1) 
     }
 
     const onPage = (e : any) => {
-        currentPage(Number(e.target.id))
+       setCurrentPage((Number(e.target.id)))
     }
     
     return (
-        <div>
-            {currentPage > 1 && <a onClick={onPrevious}>Previous</a>}
-            {paginationNumber.map(num => <a onClick={onPage}>{num}</a>)}
-            {currentPage < lastPage && <a onClick={onNext}>Next</a>}
+        <div className="flex justify-between m-auto">
+            {currentPage > 1 && <button onClick={onPrevious} className="text-blue-700 font-semibold">Previous</button>}
+            {paginationNumber.map(num => <button key={num.id} id={num} onClick={onPage}>{num}</button>)}
+            {currentPage < lastPage && <button onClick={onNext} className="text-blue-700 font-semibold">Next</button>}
         </div>
     );
 };
