@@ -4,6 +4,7 @@ import { uploadFile, FileStateProperties } from "./utils/s3_helper";
 
 import { Navbar } from "./components/navbar"
 import Home from "./pages/Home"
+import Posts from "./pages/Posts"
 import { URL } from "./constants"
 import PostMap from "./pages/PostMap"
 import { PostsMap } from "./components/postsMap"
