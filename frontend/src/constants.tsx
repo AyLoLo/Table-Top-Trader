@@ -3,12 +3,18 @@ export const PASSWORD_MAX_LEN = 25;
 export const FIRST_NAME_MAX_LEN = 25;
 export const LAST_NAME_MAX_LEN = 25;
 export const USERNAME_MAX_LEN = 25;
+export const TITLE_MAX_LEN = 50;
+export const DESCRIPTION_MAX_LEN = 500;
+export const PRICE_MAX_INT = 999999999;
 
 export const EMAIL_MIN_LEN = 5;
 export const PASSWORD_MIN_LEN = 8;
 export const FIRST_NAME_MIN_LEN = 3;
 export const LAST_NAME_MIN_LEN = 2;
 export const USERNAME_MIN_LEN = 5;
+export const TITLE_MIN_LEN = 5;
+export const DESCRIPTION_MIN_LEN = 100;
+export const PRICE_MIN_INT = 1;
 
 export const URL = "http://127.0.0.1:5000/"
 export const S3_URL = "https://table-top-trader-dev.s3.us-east-2.amazonaws.com/"
@@ -131,4 +137,68 @@ export const FORM_INPUTS = [
   },
 ];
 
-
+export const CREATE_POST_FORM_INPUTS = [
+  {
+    "label" : "Title",
+    "placeholder": "Title",
+    "htmlFor": "Title",
+    "type": "text",
+    "name": "title",
+    "validation": {
+      required: {
+        value: true, 
+        message: 'required'
+      },
+      minLength: {
+        value: TITLE_MIN_LEN,
+        message: `min ${TITLE_MIN_LEN} characters`,
+      },
+      maxLength: {
+        value: TITLE_MAX_LEN,
+        message: `min ${TITLE_MAX_LEN} characters`
+      }
+    }
+  },
+  {
+    "label" : "Description",
+    "placeholder": "Description",
+    "htmlFor": "Description",
+    "type": "text",
+    "name": "description",
+    "validation": {
+      required : {
+        value: true,
+        message: 'required'
+      },
+      minLength: {
+        value: DESCRIPTION_MIN_LEN,
+        message: `min ${DESCRIPTION_MIN_LEN} characters`
+      },
+      maxLength: {
+        value: DESCRIPTION_MAX_LEN,
+        message: `max ${DESCRIPTION_MAX_LEN} characters`
+      }
+    }
+  },
+  {
+    "label" : "Price",
+    "placeholder" : "Price",
+    "htmlFor": "Price",
+    "type": "number",
+    "name": "price",
+    "validation": {
+      required : {
+        value: true,
+        message: 'required'
+      },
+      minInt: {
+        value: PRICE_MIN_INT,
+        message: `min ${PRICE_MIN_INT} number`,
+      },
+      maxInt: {
+        value: PRICE_MAX_INT,
+        message: `max ${PRICE_MAX_INT} number`,
+      }
+    }
+  }
+]
