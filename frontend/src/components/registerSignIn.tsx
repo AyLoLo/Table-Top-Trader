@@ -35,43 +35,43 @@ export const Form = (props: {
 
   return (
     <>
-      <FormProvider {...methods}>
-        <form className="h-3/4 w-full">
-          {error && <p className="text-red-500">{error}</p>}
-          {showSignIn ?
-            FORM_INPUTS
-              .filter((items: any) => items.includeInSignIn)
-              .map((inputItems: any) =>
-                <div className="m-3" key={inputItems.label} >
-                  <Input handleOnChange={handleOnChange} inputAttributes={inputItems} />
-                </div>
-              )
-            :
-            FORM_INPUTS.map((inputItems: any) => (
-              <div className="m-3" key={inputItems.label}>
+      {/* <FormProvider {...methods}> */}
+      <form className="h-3/4 w-full">
+        {error && <p className="text-red-500">{error}</p>}
+        {showSignIn ?
+          FORM_INPUTS
+            .filter((items: any) => items.includeInSignIn)
+            .map((inputItems: any) =>
+              <div className="m-3" key={inputItems.label} >
                 <Input handleOnChange={handleOnChange} inputAttributes={inputItems} />
               </div>
-            ))
-          }
-          <div className="flex items-center justify-end pt-6 border-t border-solid border-blueGray-200 rounded-b">
+            )
+          :
+          FORM_INPUTS.map((inputItems: any) => (
+            <div className="m-3" key={inputItems.label}>
+              <Input handleOnChange={handleOnChange} inputAttributes={inputItems} />
+            </div>
+          ))
+        }
+        <div className="flex items-center justify-end pt-6 border-t border-solid border-blueGray-200 rounded-b">
+          <button
+            className="text-white bg-green-300 active:bg-green-700 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
+            type="button"
+            onClick={onSubmit}
+          >
+            {showSignIn ? "Sign In" : "Register"}
+          </button>
+          {allowExit &&
             <button
-              className="text-white bg-green-300 active:bg-green-700 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
+              className="text-white bg-red-500 active:bg-red-700 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
               type="button"
-              onClick={onSubmit}
+              onClick={() => hideModal()}
             >
-              {showSignIn ? "Sign In" : "Register"}
-            </button>
-            {allowExit &&
-              <button
-                className="text-white bg-red-500 active:bg-red-700 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
-                type="button"
-                onClick={() => hideModal()}
-              >
-                Close
-              </button>}
-          </div>
-        </form>
-      </FormProvider >
+              Close
+            </button>}
+        </div>
+      </form>
+      {/* </FormProvider > */}
     </>
   );
 }
