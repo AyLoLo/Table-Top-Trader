@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react"
 import L from "leaflet";
 import { MapContainer, TileLayer } from 'react-leaflet'
-import { MapCenter } from "../utils/mapCenter"
-import { URL } from "../constants"
+import { MapCenter } from "../../utils/mapCenter"
+import { URL } from "../../constants"
 
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
@@ -10,7 +10,7 @@ import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import 'leaflet/dist/leaflet.css';
 import { MapMarkerGroup } from "./mapMarkerGroup";
 
-export const Map = (props: any) => {
+export const PostsMap = (props: any) => {
 
   const {
     posts,
@@ -21,12 +21,10 @@ export const Map = (props: any) => {
     loading,
     setLoading,
     styles,
-    setDraggedCoords,
-    draggedCoords
+    getNearbyPosts,
   } = props
 
-  const zoomLevel = 10;
-
+  const [zoomLevel, setZoom] = useState(15);
   const [zipcodes, setZipcodes] = useState([])
 
   let DefaultIcon = L.icon({
@@ -58,11 +56,17 @@ export const Map = (props: any) => {
         return resp.json();
       })
       .then(resp => {
-        if (resp)
+        if (resp) {
+          console.log({
+            longitude: resp.longitude,
+            latitude: resp.latitude
+          })
           setMapCoords({
             longitude: resp.longitude,
             latitude: resp.latitude
           });
+          getNearbyPosts && getNearbyPosts(resp.longitude, resp.latitude);
+        }
       })
       .catch(err => console.error(err));
   }
@@ -92,18 +96,25 @@ export const Map = (props: any) => {
           className={`h-screen z-10 relative ${styles}`}
           center={[mapCoords.latitude, mapCoords.longitude]}
           zoom={zoomLevel}
-          scrollWheelZoom={false}
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <MapCenter setMapCoords={setMapCoords} setDraggedCoords={setDraggedCoords} />
+          <MapCenter
+            getNearbyPosts={getNearbyPosts}
+            setZoom={setZoom}
+            setMapCoords={setMapCoords}
+            zoomLevel={zoomLevel}
+            mapCoords={mapCoords}
+            posts={posts}
+          />
           <MapMarkerGroup
             posts={posts}
             mapCoords={mapCoords}
             setPost={setPost}
             setPanelAnimation={setPanelAnimation}
+            zoomLevel={zoomLevel}
           />
 
         </MapContainer >

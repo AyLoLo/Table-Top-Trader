@@ -1,6 +1,6 @@
 import React from "react"
-import { ExpandableText } from "./expandableText"
-import closeIcon from "../icons/close.svg"
+import { ExpandableText } from "../expandableText"
+import closeIcon from "../../icons/close.svg"
 
 export const MapSidePanel = (props: {
   panelAnimation: any,

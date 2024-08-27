@@ -8,13 +8,13 @@ module.exports = {
         "hero-background": "url('/src/assets/TTTHero.jpg')",
       },
       animation: {
-        "slide-close": "slide-close 0.75s linear",
-        "slide-open": "slide-open 0.75s linear",
+        "slide-close": "slide-close 1s linear",
+        "slide-open": "slide-open 1s linear",
       },
       keyframes: {
         "slide-open": {
           "0%": {
-            right: "-250%",
+            right: "-100%",
           },
           "100%": {
             right: "0",
@@ -22,7 +22,7 @@ module.exports = {
         },
         "slide-close": {
           "0%": { right: "0px" },
-          "100%": { right: "-250%" },
+          "100%": { right: "-100%" },
         },
       },
     },

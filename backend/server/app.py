@@ -164,10 +164,10 @@ class Posts(Resource):
     def get_by_loc():
 
         try:
-            lon = float(request.args.get('lon', -70))
-            lat = float(request.args.get('lat', 40))
-            pprint(lon)
-            pprint(lat)
+            lon = float(request.args.get('lon', None))
+            lat = float(request.args.get('lat', None))
+            if lat is None or lon is None:
+                return make_response(jsonify({"error": "Invalid params"}), 400)
             posts = Post.query.filter(
                 (func.degrees(
                     func.acos(
@@ -175,10 +175,8 @@ class Posts(Resource):
                         func.cos(func.radians(lat)) * func.cos(func.radians(Post.latitude)) * 
                         func.cos(func.radians(lon - Post.longitude))
                     )
-                ) * 60 * 1.1515 * 1.609344) <= 100).all()
-
-            pprint("======")
-            pprint(posts)
+                ) * 60 * 1.1515) <= 5).all()
+            # * 1.609344 for km
             resp = []
             for post in posts:
                 resp.append(post.to_dict())

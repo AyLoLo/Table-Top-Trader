@@ -1,15 +1,44 @@
-import { useMapEvents } from "react-leaflet";
+import { useEffect } from "react";
+import { useMap, useMapEvents } from "react-leaflet";
 
-export const MapCenter = (props: { setMapCoords: Function, setDraggedCoords: Function }) => {
-  const { setDraggedCoords } = props;
+export const MapCenter = (props: {
+  setZoom: Function,
+  getNearbyPosts: Function,
+  setMapCoords: Function,
+  zoomLevel: number,
+  posts: any,
+  mapCoords: any,
+}) => {
+
+  const {
+    getNearbyPosts,
+    zoomLevel,
+    setZoom,
+    setMapCoords,
+    posts,
+    mapCoords
+  } = props;
+
+  const m = useMap();
+
+  useEffect(() => {
+    const flyToMap = () => {
+      m.flyTo([mapCoords.latitude, mapCoords.longitude], zoomLevel);
+    }
+    flyToMap();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [posts, mapCoords]);
 
   const map = useMapEvents({
     dragend() {
-      map.locate();
+      const center = map.getCenter();
+      setMapCoords({ latitude: center.lat, longitude: center.lng });
+      getNearbyPosts && getNearbyPosts(center.lng, center.lat);
+      map.flyTo([center.lat, center.lng], zoomLevel);
     },
-    locationfound(e) {
-      console.log(e)
-      setDraggedCoords({ latitude: e.latlng.lat, longitude: e.latlng.lng });
+    zoom() {
+      const zoom = map.getZoom();
+      setZoom(zoom);
     }
   });
 
