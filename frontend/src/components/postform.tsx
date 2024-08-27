@@ -1,9 +1,39 @@
-import React, {useState, useEffect} from "react";
-import { URL } from "../constants";
+import React, {useState, useEffect, ReactElement} from "react";
+import { FORM_INPUTS, URL } from "../constants";
 import TTTUser from "../assets/TTTUser.png";
-// import {FormProvider, useForm} from "react-hook-form"
+import {FormProvider, useForm} from "react-hook-form"
 
-export const PostForm = (props : any) => {
+export const Form = (props : {
+    addNewPost: Function;
+    updateNewPost: Function;
+    error: string;
+}): ReactElement<any> => {
+    
+    const {
+        addNewPost,
+        updateNewPost,
+        error,
+    } = props
+
+    const methods = useForm()
+    const [createPostModal, setCreatePostModal] = useState<boolean>(false)
+
+    const hidePostModal = () => {
+        setCreatePostModal(false)
+    }
+    
+
+
+    return (
+        // <>
+        //     <FormProvider {...methods}>
+        //         <form className="h-3/4 w-full">
+        //             {error && <p className="text-red-500">{error}</p>}
+        //         {FORM_INPUTS.filter((items.any)) =>}
+        //         </form>
+        //     </FormProvider>
+        // </>
+    )
 
     const {
         posts,
@@ -13,7 +43,6 @@ export const PostForm = (props : any) => {
     const [currentUser, setCurrentUser] = useState(null)
     const [newPost, setNewPost] = useState({})
 
-    
     const fetchCurrentSession = async () => {
         try {
             const response = await fetch(`${URL}current-session`)
@@ -24,7 +53,7 @@ export const PostForm = (props : any) => {
         }
     };
 
-    const addNewPost = async (e : any) => {
+    const addNewPost = async (e : any, currentUser : any) => {
         e.preventDefault()
 
         const newUserPost = {...newPost, 'user_id' : currentUser.user_id}
@@ -40,6 +69,8 @@ export const PostForm = (props : any) => {
             if (response.ok){
                 response.json()
                 .then(newUserPost => setPosts([...posts, newUserPost]))
+                hidePostModal()
+                return response;
             } else {
                 console.log("An error has occurred")
                 alert("An error has occurred")
