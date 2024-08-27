@@ -112,7 +112,7 @@ class Post(db.Model, SerializerMixin):
     # Fields
 
     post_id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
+    title = db.Column(db.String(50), nullable=False)
     user_id = db.Column(db.Integer,
                         db.ForeignKey("users.user_id"), nullable=False)
     description = db.Column(db.String(500), nullable=False)
@@ -126,6 +126,24 @@ class Post(db.Model, SerializerMixin):
     board_games = db.relationship("Board_Game", secondary=board_game_posts, back_populates="posts")
     images = db.relationship("Post_Image", backref="post")
 
+    @validates('title')
+    def validate_title(self, key, value):
+        if not (5 <= len(value) <= 50):
+            raise ValueError("Title must be between 4 and 51 characters")
+        return value
+    
+    @validates('description')
+    def validate_description(self, key, value):
+        if not (100 <= len(value) <= 500):
+            raise ValueError("Description must be between 99 and 501 characters")
+        return value
+
+    @validates('price')
+    def validate_price(self, key, value):
+        if not (1 <= int(value) <= 9999999999):
+            raise ValueError("Price must be between 0 and 9,999,999,999")
+        return value
+    
     def __repr__(self):
         return f'<Post id="{self.post_id}" title="{self.title}">'
 
