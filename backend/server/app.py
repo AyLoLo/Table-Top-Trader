@@ -2,7 +2,7 @@ import math
 import ipdb
 import os
 import boto3
-
+from pprint import pprint 
 from functools import wraps
 
 from flask import Flask, make_response, jsonify, request, session, redirect
@@ -13,9 +13,9 @@ from flask_restful import Api, Resource
 from flask_cors import CORS
 from dotenv import load_dotenv, dotenv_values
 from utils.s3_utils import upload_file_to_s3
-from sqlalchemy import select
+from sqlalchemy import func, select
 
-from models import db, User, Board_Game, Post, Review, Post_Image
+from models import db, User, Board_Game, Post, Review, Post_Image, Zipcode
 
 load_dotenv()
 config = dotenv_values()
@@ -160,6 +160,30 @@ api.add_resource(Board_Games, "/board-games")
 
 
 class Posts(Resource):
+    @app.get("/get-by-loc")
+    def get_by_loc():
+
+        try:
+            lon = float(request.args.get('lon', None))
+            lat = float(request.args.get('lat', None))
+            if lat is None or lon is None:
+                return make_response(jsonify({"error": "Invalid params"}), 400)
+            posts = Post.query.filter(
+                (func.degrees(
+                    func.acos(
+                        func.sin(func.radians(lat)) * func.sin(func.radians(Post.latitude)) + 
+                        func.cos(func.radians(lat)) * func.cos(func.radians(Post.latitude)) * 
+                        func.cos(func.radians(lon - Post.longitude))
+                    )
+                ) * 60 * 1.1515) <= 5).all()
+            # * 1.609344 for km
+            resp = []
+            for post in posts:
+                resp.append(post.to_dict())
+            return make_response(jsonify(resp), 200)
+        except Exception as e:
+            pprint(e)
+            return make_response(jsonify({"error": "Invalid input"}),400)
     def get(self):
         page = request.args.get('page', 1)
         if not page.isnumeric():
@@ -167,7 +191,7 @@ class Posts(Resource):
         
         per_page = 5
 
-        query = select(Post).order_by(Post.date_created.desc()).join(Post.images)
+        query = select(Post).order_by(Post.date_created.desc())
         paginated_posts = db.paginate(query, page=int(page), per_page=per_page, error_out=False)
 
         response_body = {}
@@ -296,7 +320,6 @@ class Reviews(Resource):
             response_body.append(review.to_dict())
         return make_response(jsonify(response_body), 200)
 
-
     def post(self):
         try:
             data = request.get_json()
@@ -359,6 +382,34 @@ class ReviewsByUser(Resource):
 
 
 api.add_resource(ReviewsByUser, '/<string:username>/reviews/<int:id>')
+
+class Zipcodes(Resource):
+    def get(self):
+        zipcode = request.args.get('code', None)
+        if zipcode is None:
+            return make_response(jsonify({"error": "Need zipcode query param"}), 422)
+        zipcode = Zipcode.query.filter_by(zipcode=zipcode).first()
+        if zipcode:
+            response_body = zipcode.to_dict()
+            return make_response(jsonify(response_body), 200)
+        else:
+            return make_response(jsonify({"error": "Zipcode doesn't exist"}), 400)
+    
+    @app.get("/predict")
+    def predict():
+        zipcode = request.args.get('code', None)
+        if zipcode is None:
+            return make_response(jsonify({"error": "Need zipcode query param"}), 422)
+        
+        search = "{}%".format(zipcode)
+        zipcodes = Zipcode.query.filter(Zipcode.zipcode.like(search)).limit(5).all()
+        response_body=[]
+        for code in zipcodes:
+            response_body.append(code.to_zip_only())
+        return make_response(jsonify(response_body), 200)
+
+
+api.add_resource(Zipcodes, '/zipcode')
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
