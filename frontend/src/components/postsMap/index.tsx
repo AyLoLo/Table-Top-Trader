@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 import L from "leaflet";
-import { MapContainer, TileLayer } from 'react-leaflet'
+import { MapContainer, Marker, TileLayer } from 'react-leaflet'
 import { MapCenter } from "../../utils/mapCenter"
 import { URL } from "../../constants"
 
@@ -9,6 +9,7 @@ import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
 import 'leaflet/dist/leaflet.css';
 import { MapMarkerGroup } from "./mapMarkerGroup";
+
 
 export const PostsMap = (props: any) => {
 
@@ -22,6 +23,8 @@ export const PostsMap = (props: any) => {
     setLoading,
     styles,
     getNearbyPosts,
+    draggableMarker = false,
+    draggableMarkerEvent
   } = props
 
   const [zoomLevel, setZoom] = useState(15);
@@ -101,6 +104,13 @@ export const PostsMap = (props: any) => {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
+          {draggableMarker &&
+            <Marker
+              draggable={true}
+              eventHandlers={draggableMarkerEvent}
+              position={[mapCoords.latitude, mapCoords.longitude]}
+            />
+          }
           <MapCenter
             getNearbyPosts={getNearbyPosts}
             setZoom={setZoom}

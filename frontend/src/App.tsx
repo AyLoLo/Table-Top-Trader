@@ -32,12 +32,39 @@ const App = () => {
       });
   }, []);
 
+  const [coords, setCoords] = useState({ latitude: 0, longitude: 0 })
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        setCoords({
+          longitude: position.coords.longitude,
+          latitude: position.coords.latitude,
+        });
+      },
+      err => {
+        setLoading(false);
+        console.log(err);
+      }
+    );
+  }, []);
+
   return (
     <div className="App overflow-x-hidden relative">
       <Navbar
         registerSigninModal={registerSigninModal}
         setRegisterSigninModal={setRegisterSigninModal}
         loggedInUser={loggedInUser}
+      />
+
+      {/* <PostMap /> */}
+      <PostsMap
+        mapCoords={coords}
+        setMapCoords={setCoords}
+        loading={loading}
+        setLoading={setLoading}
+        draggableMarker={true}
       />
 
       {/* <button data-modal-target="static-modal" data-modal-toggle="static-modal" className="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
