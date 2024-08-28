@@ -8,16 +8,20 @@ export const Input = (props: { inputAttributes: InputProp, handleOnChange: Chang
   const [validationError, setValidationError] = useState<string>("");
 
   const validate = (e: ChangeEvent<HTMLInputElement>) => {
-    const text = e.target.value;
-    const { required, minLength, maxLength, pattern } = validation
+    const input = e.target.value;
+    const { required, minLength, maxLength, minInt, maxInt, pattern } = validation
 
-    if (minLength && text.length < minLength.value)
+    if (minLength && input.length < minLength.value)
       setValidationError(minLength.message);
-    else if (maxLength && text.length > maxLength.value)
+    else if (maxLength && input.length > maxLength.value)
       setValidationError(maxLength.message);
-    else if (pattern && !text.match(pattern.value))
+    else if (minInt && parseInt(input) < minInt.value)
+      setValidationError(minInt.message)
+    else if (maxInt && parseInt(input) < maxInt.value)
+      setValidationError(maxInt.message)
+    else if (pattern && !input.match(pattern.value))
       setValidationError(pattern.message);
-    else if (required && (!text || text.length === 0)) setValidationError(required.message);
+    else if (required && (!input || input.length === 0)) setValidationError(required.message);
     else setValidationError("");
   }
 
