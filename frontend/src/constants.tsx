@@ -137,6 +137,7 @@ export const FORM_INPUTS = [
   },
 ];
 
+
 export const CREATE_POST_FORM_INPUTS = [
   {
     "label" : "Title",
