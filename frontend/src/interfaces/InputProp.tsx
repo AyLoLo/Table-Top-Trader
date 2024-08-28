@@ -17,6 +17,14 @@ export interface InputProp {
       value: number;
       message: string;
     };
+    minInt: {
+      value: number;
+      message: string;
+    }
+    maxInt: {
+      value: number;
+      message: string;
+    }
     pattern?: {
       value: RegExp;
       message: string;
