@@ -18,9 +18,10 @@ export const uploadFile = async (file : FileStateProperties) => {
     params: { "Bucket": S3_BUCKET },
     region: REGION,
   });
+  const key = file?.name.replace(" ", "-");
   const params: PutObjectRequest = {
     "Bucket": S3_BUCKET,
-    "Key": file?.name || "",
+    "Key": key || "",
     "Body": file,
     "ACL": "public-read",
   };
@@ -28,5 +29,5 @@ export const uploadFile = async (file : FileStateProperties) => {
     .putObject(params)
     .promise();
   await upload;
-  return "";
+  return key;
 };
