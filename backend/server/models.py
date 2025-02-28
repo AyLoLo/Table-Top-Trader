@@ -2,8 +2,6 @@ import re
 from typing import List
 
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import mapped_column
-from sqlalchemy.orm import Mapped
 from sqlalchemy import ForeignKey, MetaData
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.orm import validates
